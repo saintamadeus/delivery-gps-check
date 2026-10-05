@@ -1,0 +1,355 @@
+S/N,LGA,Facility Name,Latitude,Longitude,Status,Where it came from
+1,Agege,Agege - Promise Medical Centre,6.61511,3.3126,Confirmed,auto found
+2,Agege,Betta Hospital,6.626499,3.308796,Confirmed,Google Maps / OpenStreetMap lookup
+3,Agege,General Hospital Orile Agege,6.634995,3.303487,Confirmed,Google Maps / OpenStreetMap lookup
+4,Agege,Health Post Ajegunle,6.616949,3.330511,Confirmed,Google Maps / OpenStreetMap lookup
+5,Agege,Papa Ashafa Health Post,6.622236,3.308497,Confirmed,Google Maps / OpenStreetMap lookup
+6,Agege,Primary Health Centre Dopemu,6.611166,3.315179,Confirmed,Google Maps / OpenStreetMap lookup
+7,Agege,Primary Health Centre Iloro,6.611365,3.32315,Confirmed,Google Maps / OpenStreetMap lookup
+8,Agege,Primary Health Centre Kwakwa Uku,6.621047,3.323529,Confirmed,Google Maps / OpenStreetMap lookup
+9,Agege,Primary Health Centre Odunbakun,6.622872,3.307838,Confirmed,Google Maps / OpenStreetMap lookup
+10,Agege,Primary Health Centre Powerline,6.633976,3.310271,Confirmed,Google Maps / OpenStreetMap lookup
+11,Agege,Primary Health Centre Sango (Lagos),6.62548,3.32504,Confirmed,auto found
+12,Agege,Primary Health Centre Soretire,6.63431,3.30632,Confirmed,auto found
+13,Agege,Primary health centre Ibijoke Claudia Sanwoolu,6.627125,3.307467,Confirmed,Google Maps / OpenStreetMap lookup
+14,Ajeromi Ifelodun,Asiwaju Bola Ahmed Tinubu Comprehensive centre,6.464837,3.327984,Confirmed,Google Maps / OpenStreetMap lookup
+15,Ajeromi Ifelodun,General Hospital Ajeromi,6.45523,3.332924,Confirmed,Google Maps / OpenStreetMap lookup
+16,Ajeromi Ifelodun,Health Centre Akere,6.449543,3.341842,Confirmed,Google Maps / OpenStreetMap lookup
+17,Ajeromi Ifelodun,Naval Hospital,6.456214,3.354975,Confirmed,Google Maps / OpenStreetMap lookup
+18,Ajeromi Ifelodun,Primary Health Centre Ajegunle,6.456276,3.345381,Confirmed,Google Maps / OpenStreetMap lookup
+19,Ajeromi Ifelodun,Primary Health Centre Amukoko,6.466105,3.342793,Confirmed,Google Maps / OpenStreetMap lookup
+20,Ajeromi Ifelodun,Primary Health Centre Ibafon,6.443378,3.330576,Confirmed,Google Maps / OpenStreetMap lookup
+21,Ajeromi Ifelodun,Primary Health Centre Layeni,6.460268,3.325907,Confirmed,Google Maps / OpenStreetMap lookup
+22,Ajeromi Ifelodun,Primary Health Centre Oridilu,6.464415,3.351569,Confirmed,Google Maps / OpenStreetMap lookup
+23,Ajeromi Ifelodun,Primary Health Centre Tolu,6.444931,3.346329,Confirmed,Google Maps / OpenStreetMap lookup
+24,Alimosho,General Hospital Alimosho,6.561345,3.25132,Confirmed,Google Maps / OpenStreetMap lookup
+25,Alimosho,Ishuti Health Post,6.552062,3.207978,Confirmed,Google Maps / OpenStreetMap lookup
+26,Alimosho,Ogbomosotedo Health Post,6.57507,3.25804,Confirmed,auto found
+27,Alimosho,Primary Health Centre Abaranje,6.5294,3.2419,Confirmed,Google Maps / OpenStreetMap lookup
+28,Alimosho,Primary Health Centre Aboru,6.624545,3.282097,Confirmed,Google Maps / OpenStreetMap lookup
+29,Alimosho,Primary Health Centre Agbado,6.677801,3.259983,Confirmed,Google Maps / OpenStreetMap lookup
+30,Alimosho,Primary Health Centre Agbelekale,6.638108,3.284097,Confirmed,Google Maps / OpenStreetMap lookup
+31,Alimosho,Primary Health Centre Agodo,6.53205,3.2794,To check,"Registry puts Agodo PHC here; Google puts it 1.6km away (6.53972,3.29232)"
+32,Alimosho,Primary Health Centre Akinogun,6.609472,3.284577,Confirmed,Google Maps / OpenStreetMap lookup
+33,Alimosho,Primary Health Centre Akinyele,6.610678,3.265062,Confirmed,Google Maps / OpenStreetMap lookup
+34,Alimosho,Primary Health Centre Akowonjo,6.600396,3.300375,Confirmed,Google Maps / OpenStreetMap lookup
+35,Alimosho,Primary Health Centre Amikanle,6.650459,3.244637,Confirmed,Google Maps / OpenStreetMap lookup
+36,Alimosho,Primary Health Centre Asiwaju Bola Ahmed Tinubu,6.63475,3.28031,Confirmed,auto found
+37,Alimosho,Primary Health Centre Ayobo,6.6064,3.23484,Confirmed,auto found
+38,Alimosho,Primary Health Centre Bada,6.59052,3.22827,Confirmed,auto found
+39,Alimosho,Primary Health Centre Baruwa,6.500719,3.33275,Confirmed,Google Maps / OpenStreetMap lookup
+40,Alimosho,Primary Health Centre Cele Apata,6.575328,3.214523,Confirmed,Google Maps / OpenStreetMap lookup
+41,Alimosho,Primary Health Centre Egan,6.547462,3.235265,Confirmed,Google Maps / OpenStreetMap lookup
+42,Alimosho,Primary Health Centre Egbe Idimu (Helen Aderonke),6.552058,3.281047,Confirmed,Google Maps / OpenStreetMap lookup
+43,Alimosho,Primary Health Centre Ijegun,6.51537,3.260543,Confirmed,Google Maps / OpenStreetMap lookup
+44,Alimosho,Primary Health Centre Ikola,6.626671,3.247502,Confirmed,Google Maps / OpenStreetMap lookup
+45,Alimosho,Primary Health Centre Ikotun,6.552455,3.269309,Confirmed,Google Maps / OpenStreetMap lookup
+46,Alimosho,Primary Health Centre Ipaja,6.60445,3.25419,Confirmed,auto found
+47,Alimosho,Primary Health Centre Ipinlerere,6.60957,3.301353,Confirmed,Google Maps / OpenStreetMap lookup
+48,Alimosho,Primary Health Centre Isefun,6.57971,3.207518,Confirmed,auto found
+49,Alimosho,Primary Health Centre Isheri Olofin,6.576704,3.28073,Confirmed,Google Maps / OpenStreetMap lookup
+50,Alimosho,Primary Health Centre Isheri-Oshun,6.513499,3.279356,Confirmed,Google Maps / OpenStreetMap lookup
+51,Alimosho,Primary Health Centre Kokumo,6.61208,3.29417,Confirmed,auto found
+52,Alimosho,Primary Health Centre Meiran,6.663683,3.281841,Confirmed,Google Maps / OpenStreetMap lookup
+53,Alimosho,Primary Health Centre Ogundimu,6.623901,3.291338,Confirmed,Google Maps / OpenStreetMap lookup
+54,Alimosho,Primary Health Centre Oke-Odo,6.639574,3.29621,Confirmed,Google Maps / OpenStreetMap lookup
+55,Alimosho,Primary Health Centre Oki,6.615393,3.295965,Confirmed,Google Maps / OpenStreetMap lookup
+56,Alimosho,Primary Health Centre Olota,6.643945,3.286369,Confirmed,Google Maps / OpenStreetMap lookup
+57,Alimosho,Primary Health Centre Opeki,6.61047,3.26531,Confirmed,auto found
+58,Alimosho,Primary Health Centre Orisunbare,6.57007,3.302892,Confirmed,Google Maps / OpenStreetMap lookup
+59,Alimosho,Primary Health Centre Rauf Aregbesola,6.594733,3.282675,Confirmed,auto found
+60,Alimosho,Primary Health Centre Surulere,6.647287,3.260091,Confirmed,auto found
+61,Amuwo Odofin,Health Post Irede,6.441284,3.265076,Confirmed,auto found
+62,Amuwo Odofin,Health Post Tomaro,,,No location yet,
+63,Amuwo Odofin,Maternal And Child Health Centre Amuwo,6.46176,3.3017,Confirmed,auto found
+64,Amuwo Odofin,Nigerian Navy Reference Hospital Ojo,6.45166,3.28236,Confirmed,auto found
+65,Amuwo Odofin,Primary Health Centre Agboju,6.459133,3.291302,Confirmed,auto found
+66,Amuwo Odofin,Primary Health Centre Bola Ahmed Tinubu,6.46248,3.25864,Confirmed,auto found
+67,Amuwo Odofin,Primary Health Centre Festac,6.469454,3.28377,Confirmed,Google Maps / OpenStreetMap lookup
+68,Amuwo Odofin,Primary Health Centre Ibeshe Amuwo Odofin,6.41364,3.25228,To check,"Google Maps: Ibeshe PHC, Amuwo Odofin (same pin as a registry clinic - check)"
+69,Amuwo Odofin,Primary Health Centre Igbologun,6.41369,3.2523,Confirmed,auto found
+70,Amuwo Odofin,Primary Health Centre Ijegun,6.44124,3.26477,Confirmed,auto found
+71,Amuwo Odofin,Primary Health Centre Kirikiri,6.44325,3.30521,Confirmed,auto found
+72,Amuwo Odofin,Primary Health Centre Mile 2,6.46592,3.31742,Confirmed,auto found
+73,Amuwo Odofin,Primary Health Centre Sagbokoji,6.43189,3.37591,To check,"Registry (GRID3/NHFR): Sagbokoji PHC (registry lists it under Apapa, not Amuwo Odofin)"
+74,Amuwo Odofin,Primary Health Centre Satellite,6.44973,3.26466,Confirmed,auto found
+75,Apapa,General Hospital Apapa,6.44233,3.36843,Confirmed,auto found
+76,Apapa,Primary Health Centre Ijora,6.467835,3.36788,Confirmed,auto found
+77,Apapa,Primary Health Centre Marine Beach,6.457092,3.363281,Confirmed,auto found
+78,Apapa,Primary Health Centre Nanti,6.426697,3.346428,Confirmed,auto found
+79,Apapa,Primary Health Centre Ojora Olugbode,6.46785,3.3597,Confirmed,auto found
+80,Apapa,Primary Health Centre Olojowon,6.470233,3.352188,Confirmed,auto found
+81,Apapa,Primary Health Centre Oluwole,6.451111,3.352478,Confirmed,auto found
+82,Apapa,Primary Health Centre Sari Iganmu,6.476317,3.341793,Confirmed,auto found
+83,Apapa,Primary Health Centre Zion,6.47729,3.35211,Confirmed,auto found
+84,Badagry,General Hospital Badagry,6.414361,2.897278,Confirmed,Google Maps / OpenStreetMap lookup
+85,Badagry,Health Post Isamole,6.496092,2.999212,Confirmed,Google Maps / OpenStreetMap lookup
+86,Badagry,Primary Health Centre Ajara,6.434645,2.890563,Confirmed,Google Maps / OpenStreetMap lookup
+87,Badagry,Primary Health Centre Ajido,6.415919,3.012087,Confirmed,Google Maps / OpenStreetMap lookup
+88,Badagry,Primary Health Centre Apa Badagry,6.431735,2.82347,Confirmed,Google Maps / OpenStreetMap lookup
+89,Badagry,Primary Health Centre Araromi,,,No location yet,"Google lists 'Araromi-Ale PHC, Badagry Expressway' but its map pin is wrong (points to Osun). Needs field pin"
+90,Badagry,Primary Health Centre Farasime,6.425665,2.714492,Confirmed,auto found
+91,Badagry,Primary Health Centre Gberefu,6.397262,2.873342,Confirmed,auto found
+92,Badagry,Primary Health Centre Ibereko,6.441828,2.919407,Confirmed,auto found
+93,Badagry,Primary Health Centre Ibereko Barracks,6.43949,2.91688,To check,"Registry (GRID3/NHFR): 243 Battalion Medical Station, Ibereko Barracks (not the civilian Ibereko PHC)"
+94,Badagry,Primary Health Centre Igbogbele,6.422805,2.779422,Confirmed,auto found
+95,Badagry,Primary Health Centre Ilado,6.43726,2.966197,Confirmed,auto found
+96,Badagry,Primary Health Centre Ilogbo,6.500953,3.027703,Confirmed,auto found
+97,Badagry,Primary Health Centre Marina,6.413383,2.885762,Confirmed,auto found
+98,Badagry,Primary Health Centre Morogbo,6.49628,3.09238,Confirmed,auto found
+99,Badagry,Primary Health Centre Mowo,6.460762,2.960133,Confirmed,auto found
+100,Badagry,Primary Health Centre Obele-Esepe,6.46328,3.03169,Confirmed,auto found
+101,Badagry,Primary Health Centre Pota,6.487948,2.958803,Confirmed,auto found
+102,Badagry,Primary Health Centre Sakpo,6.39423,2.838163,Confirmed,auto found
+103,Badagry,Primary Health Centre Seme,6.379192,2.711186,Confirmed,auto found
+104,Badagry,Primary Health Centre Wilbros,6.41524,2.99027,Confirmed,auto found
+105,Epe,General Hospital Agbowa,6.63726,3.7147,Confirmed,auto found
+106,Epe,General Hospital Epe,6.58649,3.9707,Confirmed,auto found
+107,Epe,Primary Health Centre Afuye,6.582652,3.98916,Confirmed,auto found
+108,Epe,Primary Health Centre Agbowa,6.640145,3.712118,Confirmed,auto found
+109,Epe,Primary Health Centre Ejirin,6.61292,3.89761,Confirmed,auto found
+110,Epe,Primary Health Centre Epe,6.58981,3.97989,Confirmed,auto found
+111,Epe,Primary Health Centre Eredo,6.647985,3.98903,Confirmed,auto found
+112,Epe,Primary Health Centre Erepoto,6.57727,3.96774,Confirmed,auto found
+113,Epe,Primary Health Centre Ibonwon,6.67245,3.99648,Confirmed,auto found
+114,Epe,Primary Health Centre Ikosi -Ejirin Cotta,6.67346,3.73881,To check,"Registry (GRID3/NHFR): Ota Ikosi PHC, Epe - best guess for 'Ikosi-Ejirin Cotta'"
+115,Epe,Primary Health Centre Ilara,6.662028,4.000471,Confirmed,auto found
+116,Epe,Primary Health Centre Itoikin,6.65676,3.79452,Confirmed,auto found
+117,Epe,Primary Health Centre Mojoda,6.678325,3.984743,Confirmed,auto found
+118,Epe,Primary Health Centre Odomola,6.608186,3.989092,Confirmed,auto found
+119,Epe,Primary Health Centre Papa,6.584847,3.96316,Confirmed,auto found
+120,Epe,Primary Health Centre Poka,6.61959,3.98723,Confirmed,auto found
+121,Epe,Primary Health Centre Sagidan,6.584395,3.977455,Confirmed,auto found
+122,Eti Osa,Maternal and Child health Centre Eti-Osa,6.46308,3.58518,Confirmed,auto found
+123,Eti Osa,Military Hospital Lagos,6.443612,3.407714,Confirmed,Google Maps / OpenStreetMap lookup
+124,Eti Osa,Navy Hospital,6.42361,3.40939,Confirmed,Google Maps / OpenStreetMap lookup
+125,Eti Osa,Police Hospital Falomo,6.442826,3.429025,Confirmed,Google Maps / OpenStreetMap lookup
+126,Eti Osa,Primary Health Centre Ado Langbasa,6.50112,3.58125,Confirmed,Google Maps / OpenStreetMap lookup
+127,Eti Osa,Primary Health Centre Ajah,6.468323,3.563477,Confirmed,Google Maps / OpenStreetMap lookup
+128,Eti Osa,Primary Health Centre Ajiran,6.453674,3.520325,Confirmed,Google Maps / OpenStreetMap lookup
+129,Eti Osa,Primary Health Centre Badore,6.509163,3.611462,Confirmed,Google Maps / OpenStreetMap lookup
+130,Eti Osa,Primary Health Centre Gbara Mayegun,6.432922,3.510681,Confirmed,Google Maps / OpenStreetMap lookup
+131,Eti Osa,Primary Health Centre Igbo-Efon,6.436848,3.52254,Confirmed,Google Maps / OpenStreetMap lookup
+132,Eti Osa,Primary Health Centre Ikate,6.434482,3.486137,Confirmed,Google Maps / OpenStreetMap lookup
+133,Eti Osa,Primary Health Centre Ikota,6.454457,3.555848,Confirmed,Google Maps / OpenStreetMap lookup
+134,Eti Osa,Primary Health Centre Ikoyi,6.450928,3.410706,Confirmed,Google Maps / OpenStreetMap lookup
+135,Eti Osa,Primary Health Centre Ilasan,6.43339,3.50364,Confirmed,Google Maps / OpenStreetMap lookup
+136,Eti Osa,Primary Health Centre Obalende,6.449718,3.412312,Confirmed,Google Maps / OpenStreetMap lookup
+137,Eti Osa,Primary Health Centre Ogombo,6.449258,3.612067,Confirmed,Google Maps / OpenStreetMap lookup
+138,Eti Osa,Primary Health Centre Okunmopo,6.427608,3.619368,Confirmed,Google Maps / OpenStreetMap lookup
+139,Eti Osa,Primary Health Centre Oniru,6.424665,3.452663,Confirmed,Google Maps / OpenStreetMap lookup
+140,Eti Osa,Primary Health Centre Oriyanrin,6.433472,3.440308,Confirmed,Google Maps / OpenStreetMap lookup
+141,Eti Osa,Primary Health Centre Sangotedo,6.472453,3.632537,Confirmed,Google Maps / OpenStreetMap lookup
+142,Eti Osa,Primary health centre Ifesowapo,6.45534,3.56672,Confirmed,Google Maps / OpenStreetMap lookup
+143,Ibeju Lekki,General Hospital Ibeju Lekki,6.43963,3.93401,Confirmed,Google Maps / OpenStreetMap lookup
+144,Ibeju Lekki,Primary Health Centre Apakin,6.40454,4.131885,Confirmed,Google Maps / OpenStreetMap lookup
+145,Ibeju Lekki,Primary Health Centre Awoyaya (Cbhis),6.479309,3.704895,Confirmed,Google Maps / OpenStreetMap lookup
+146,Ibeju Lekki,Primary Health Centre Awoyaya 1,6.468042,3.705298,Confirmed,Google Maps / OpenStreetMap lookup
+147,Ibeju Lekki,Primary Health Centre Ayeteju,6.47352,3.809657,Confirmed,Google Maps / OpenStreetMap lookup
+148,Ibeju Lekki,Primary Health Centre Bogije,6.48227,3.72114,Confirmed,Google Maps / OpenStreetMap lookup
+149,Ibeju Lekki,Primary Health Centre Debojo,6.44149,3.837287,Confirmed,Google Maps / OpenStreetMap lookup
+150,Ibeju Lekki,Primary Health Centre Folu,6.39367,4.196256,Confirmed,Google Maps / OpenStreetMap lookup
+151,Ibeju Lekki,Primary Health Centre Ibeju,6.41644,4.0851,Confirmed,Google Maps / OpenStreetMap lookup
+152,Ibeju Lekki,Primary Health Centre Iberekodo,6.44021,3.85964,Confirmed,Google Maps / OpenStreetMap lookup
+153,Ibeju Lekki,Primary Health Centre Idasho,6.429242,3.986561,Confirmed,Google Maps / OpenStreetMap lookup
+154,Ibeju Lekki,Primary Health Centre Idotun,6.424543,4.022795,Confirmed,Google Maps / OpenStreetMap lookup
+155,Ibeju Lekki,Primary Health Centre Lakowe,6.47453,3.73861,Confirmed,Google Maps / OpenStreetMap lookup
+156,Ibeju Lekki,Primary Health Centre Lekki,6.41363,4.09464,Confirmed,Google Maps / OpenStreetMap lookup
+157,Ibeju Lekki,Primary Health Centre Magbon-Segun,6.428935,3.997037,Confirmed,Google Maps / OpenStreetMap lookup
+158,Ibeju Lekki,Primary Health Centre Okun-Ise,6.391355,4.208233,Confirmed,Google Maps / OpenStreetMap lookup
+159,Ibeju Lekki,Primary Health Centre Okunraye,6.42023,4.05505,Confirmed,Google Maps / OpenStreetMap lookup
+160,Ibeju Lekki,Primary Health Centre Orimedu,6.440638,3.901619,Confirmed,Google Maps / OpenStreetMap lookup
+161,Ibeju Lekki,Primary Health Centre Otunla,6.47287,3.75029,Confirmed,Google Maps / OpenStreetMap lookup
+162,Ibeju Lekki,Primary Health Centre Solu Alade,6.439402,3.789728,Confirmed,Google Maps / OpenStreetMap lookup
+163,Ifako Ijaye,General Hospital Ifako Ijaiye,6.643537,3.32584,Confirmed,Google Maps / OpenStreetMap lookup
+164,Ifako Ijaye,Primary Health Centre Abule Tuntun,6.68498,3.2776,Confirmed,Google Maps / OpenStreetMap lookup
+165,Ifako Ijaye,Primary Health Centre Adesola,6.670642,3.310094,Confirmed,Google Maps / OpenStreetMap lookup
+166,Ifako Ijaye,Primary Health Centre Agbado (Primary Health Centre Kola),6.67516,3.27352,Confirmed,Google Maps / OpenStreetMap lookup
+167,Ifako Ijaye,Primary Health Centre Aina Ajobo,6.638593,3.340252,Confirmed,Google Maps / OpenStreetMap lookup
+168,Ifako Ijaye,Primary Health Centre Ifako,6.6453,3.3256,Confirmed,Google Maps / OpenStreetMap lookup
+169,Ifako Ijaye,Primary Health Centre Iju,6.661144,3.322935,Confirmed,Google Maps / OpenStreetMap lookup
+170,Ifako Ijaye,Primary Health Centre Ilo Ajegunle,6.694702,3.262878,Confirmed,Google Maps / OpenStreetMap lookup
+171,Ifako Ijaye,Primary Health Centre Isokan,6.674445,3.299305,Confirmed,Google Maps / OpenStreetMap lookup
+172,Ifako Ijaye,Primary Health Centre Obawole,6.656453,3.333165,Confirmed,Google Maps / OpenStreetMap lookup
+173,Ifako Ijaye,Primary Health Centre Ogundinmu,6.66791,3.33771,Confirmed,Google Maps / OpenStreetMap lookup
+174,Ifako Ijaye,Primary Health Centre Ojokoro (Primary Health Centre Iwa),6.66023,3.296,To check,Registry (GRID3/NHFR): Ojokoro PHC - couldn't confirm the 'Iwa' part of the name
+175,Ikeja,9 Bmc Ikeja,6.56737,3.35849,Confirmed,Google Maps / OpenStreetMap lookup
+176,Ikeja,Folarin Coker Staff Clinic,6.61563,3.36186,Confirmed,Google Maps / OpenStreetMap lookup
+177,Ikeja,Health Post Alade Market,6.60672,3.34995,Confirmed,Google Maps / OpenStreetMap lookup
+178,Ikeja,Lagos State University Teaching Hospital Ikeja,6.589661,3.342198,Confirmed,Google Maps / OpenStreetMap lookup
+179,Ikeja,Primary Health Center Agidingbi,6.6186,3.3542,Confirmed,Google Maps / OpenStreetMap lookup
+180,Ikeja,Primary Health Centre Abule Onigbagbo,6.585903,3.357935,Confirmed,Google Maps / OpenStreetMap lookup
+181,Ikeja,Primary Health Centre Adeniyi Jones Mdg,6.61275,3.34864,Confirmed,Google Maps / OpenStreetMap lookup
+183,Ikeja,Primary Health Centre Aguda,6.636292,3.348083,Confirmed,Google Maps / OpenStreetMap lookup
+184,Ikeja,Primary Health Centre Akiode,6.639777,3.355752,Confirmed,Google Maps / OpenStreetMap lookup
+185,Ikeja,Primary Health Centre Alausa,6.6107,3.35675,Confirmed,Google Maps / OpenStreetMap lookup
+186,Ikeja,Primary Health Centre Beko Ransome-Kuti,6.587657,3.346208,Confirmed,Google Maps / OpenStreetMap lookup
+187,Ikeja,Primary Health Centre Ikeja,6.59715,3.33843,Confirmed,Google Maps / OpenStreetMap lookup
+188,Ikeja,Primary Health Centre Ogba Oluwole,6.63057,3.3423,Confirmed,Google Maps / OpenStreetMap lookup
+189,Ikeja,Primary Health Centre Ojodu,6.64746,3.358747,Confirmed,Google Maps / OpenStreetMap lookup
+190,Ikeja,Primary Health Centre Oke Ira Mdg,6.64816,3.35214,Confirmed,Google Maps / OpenStreetMap lookup
+191,Ikeja,Primary Health Centre Oke-Ira Powerline,6.65359,3.34828,Confirmed,Google Maps / OpenStreetMap lookup
+192,Ikeja,Primary Health Centre Olusosun,6.59012,3.37487,Confirmed,Google Maps / OpenStreetMap lookup
+193,Ikeja,Primary Health Centre Onigbongbo,6.570809,3.364796,Confirmed,Google Maps / OpenStreetMap lookup
+194,Ikeja,Primary Health Centre Onilekere,6.60498,3.317782,Confirmed,Google Maps / OpenStreetMap lookup
+195,Ikeja,Primary Health Centre Onipetesi,6.60746,3.325858,Confirmed,Google Maps / OpenStreetMap lookup
+196,Ikeja,Primary Health Centre Opebi,6.589447,3.362393,Confirmed,Google Maps / OpenStreetMap lookup
+197,Ikeja,Primary Health Centre Oregun,6.600967,3.364128,Confirmed,Google Maps / OpenStreetMap lookup
+198,Ikeja,Primary Health Centre Wasimi,6.578665,3.368542,Confirmed,Google Maps / OpenStreetMap lookup
+199,Ikorodu,Abala Peadiatics,6.63116,3.50892,Confirmed,Google Maps / OpenStreetMap lookup
+200,Ikorodu,Eocc,6.6146,3.5042,Confirmed,Google Maps / OpenStreetMap lookup
+201,Ikorodu,General Hospital Ijede,6.564733,3.596555,Confirmed,Google Maps / OpenStreetMap lookup
+202,Ikorodu,General Hospital Ikorodu,6.608542,3.499795,Confirmed,Google Maps / OpenStreetMap lookup
+203,Ikorodu,General Hospital Imota,6.660017,3.669608,Confirmed,Google Maps / OpenStreetMap lookup
+204,Ikorodu,Health Centre Ijede,6.564722,3.590148,Confirmed,Google Maps / OpenStreetMap lookup
+205,Ikorodu,Health Post Parafa,6.643817,3.556205,Confirmed,Google Maps / OpenStreetMap lookup
+206,Ikorodu,Primary Health Centre (Imota) Orio Kuta,6.68076,3.67161,Confirmed,Google Maps / OpenStreetMap lookup
+207,Ikorodu,Primary Health Centre Abule-Eko,6.5833,3.59401,Confirmed,Google Maps / OpenStreetMap lookup
+208,Ikorodu,Primary Health Centre Agbede,6.678935,3.482637,Confirmed,Google Maps / OpenStreetMap lookup
+209,Ikorodu,Primary Health Centre Agbele,6.61933,3.5183,Confirmed,Google Maps / OpenStreetMap lookup
+210,Ikorodu,Primary Health Centre Agura,6.57998,3.627858,Confirmed,Google Maps / OpenStreetMap lookup
+211,Ikorodu,Primary Health Centre Akan-un,,,No location yet,'Akan-un' not found in registry or Google
+212,Ikorodu,Primary Health Centre Bayeku,6.546615,3.542918,Confirmed,Google Maps / OpenStreetMap lookup
+213,Ikorodu,Primary Health Centre Erunwen,6.60452,3.54379,Confirmed,Google Maps / OpenStreetMap lookup
+214,Ikorodu,Primary Health Centre Ewu Elepe,6.614875,3.566435,Confirmed,Google Maps / OpenStreetMap lookup
+215,Ikorodu,Primary Health Centre Ibeshe,6.55843,3.47562,Confirmed,Google Maps / OpenStreetMap lookup
+216,Ikorodu,Primary Health Centre Igbalu,6.5874,3.65227,Confirmed,Google Maps / OpenStreetMap lookup
+217,Ikorodu,Primary Health Centre Igbogbo (Primary Health Centreagbele),6.59258,3.52233,Confirmed,Google Maps / OpenStreetMap lookup
+218,Ikorodu,Primary Health Centre Igboolomu,6.67671,3.46217,Confirmed,Google Maps / OpenStreetMap lookup
+219,Ikorodu,Primary Health Centre Imota,6.660017,3.669608,Confirmed,Google Maps / OpenStreetMap lookup
+220,Ikorodu,Primary Health Centre Ipakodo,6.601972,3.49231,Confirmed,Google Maps / OpenStreetMap lookup
+221,Ikorodu,Primary Health Centre Isiu,6.663403,3.612412,Confirmed,Google Maps / OpenStreetMap lookup
+222,Ikorodu,Primary Health Centre Ita-Elewa,6.612563,3.502647,Confirmed,Google Maps / OpenStreetMap lookup
+223,Ikorodu,Primary Health Centre Lasunwo,6.64855,3.51396,Confirmed,Google Maps / OpenStreetMap lookup
+224,Ikorodu,Primary Health Centre Losi Oba,6.680123,3.515702,Confirmed,Google Maps / OpenStreetMap lookup
+225,Ikorodu,Primary Health Centre Majidun,6.617768,3.473693,Confirmed,Google Maps / OpenStreetMap lookup
+226,Ikorodu,Primary Health Centre Mojoda,6.54901,3.47887,Confirmed,Google Maps / OpenStreetMap lookup
+227,Ikorodu,Primary Health Centre Odonla,6.67143,3.53469,Confirmed,Google Maps / OpenStreetMap lookup
+228,Ikorodu,Primary Health Centre Offin,6.540387,3.500135,Confirmed,Google Maps / OpenStreetMap lookup
+229,Ikorodu,Primary Health Centre Oke Eletu,6.600343,3.588065,Confirmed,Google Maps / OpenStreetMap lookup
+230,Ikorodu,Primary Health Centre Oke-Lisa,6.60962,3.67089,Confirmed,Google Maps / OpenStreetMap lookup
+231,Ikorodu,Primary Health Centre Olorunda,6.66867,3.585868,Confirmed,Google Maps / OpenStreetMap lookup
+232,Ikorodu,Primary Health Centre Omolaiye,6.66835,3.47302,Confirmed,Google Maps / OpenStreetMap lookup
+233,Ikorodu,Primary Health Centre Ori Okuta,6.64447,3.483704,Confirmed,Google Maps / OpenStreetMap lookup
+234,Kosofe,General Hospital Gbagada,6.552366,3.386774,Confirmed,Google Maps / OpenStreetMap lookup
+235,Kosofe,Primary Health Centre Agboyi,6.578381,3.409668,Confirmed,Google Maps / OpenStreetMap lookup
+236,Kosofe,Primary Health Centre Ajegunle,6.60722,3.43095,Confirmed,Google Maps / OpenStreetMap lookup
+237,Kosofe,Primary Health Centre Alapere,6.581307,3.398643,Confirmed,Google Maps / OpenStreetMap lookup
+238,Kosofe,Primary Health Centre Idera,6.612158,3.416589,Confirmed,Google Maps / OpenStreetMap lookup
+239,Kosofe,Primary Health Centre Ikosi,6.599947,3.38327,Confirmed,Google Maps / OpenStreetMap lookup
+240,Kosofe,Primary Health Centre Isheri,6.63706,3.38122,Confirmed,Google Maps / OpenStreetMap lookup
+241,Kosofe,Primary Health Centre Ketu (Mascara),6.59486,3.38956,Confirmed,Google Maps / OpenStreetMap lookup
+242,Kosofe,Primary Health Centre Maidan,6.609207,3.398513,Confirmed,Google Maps / OpenStreetMap lookup
+243,Kosofe,Primary Health Centre Mende,6.570277,3.372548,Confirmed,Google Maps / OpenStreetMap lookup
+244,Kosofe,Primary Health Centre Ogudu Kosofe,6.573888,3.394567,Confirmed,Google Maps / OpenStreetMap lookup
+245,Kosofe,Primary Health Centre Olowora,6.6344,3.3775,To check,Same spot as PHC Isheri - may be the same facility listed twice; confirm
+246,Kosofe,Primary Health Centre Oworo,6.54269,3.403102,Confirmed,Google Maps / OpenStreetMap lookup
+247,Lagos Island,Anikantamo Primary Health Centre,6.457886,3.394287,Confirmed,Google Maps / OpenStreetMap lookup
+248,Lagos Island,Carena Health Post,,,No location yet,'Carena Health Post' not found in registry or Google
+249,Lagos Island,General Hospital Lagos,6.447529,3.396532,Confirmed,Google Maps / OpenStreetMap lookup
+250,Lagos Island,Health Centre Onikan Lagos,6.444652,3.405462,Confirmed,Google Maps / OpenStreetMap lookup
+251,Lagos Island,Health Post Itafaji,6.45569,3.39069,Confirmed,Google Maps / OpenStreetMap lookup
+252,Lagos Island,Health Post Tajudeen Olusi,6.46261,3.3849,Confirmed,Google Maps / OpenStreetMap lookup
+253,Lagos Island,Lagos Island Maternity Hospital,6.448662,3.397378,Confirmed,Google Maps / OpenStreetMap lookup
+254,Lagos Island,Massey Street Children Hospital,6.455071,3.392241,Confirmed,Google Maps / OpenStreetMap lookup
+255,Lagos Island,Onala Health Post,6.457397,3.392335,Confirmed,Google Maps / OpenStreetMap lookup
+256,Lagos Island,Primary Health Centre Agarawu (Oko Awo),6.45766,3.38924,Confirmed,Google Maps / OpenStreetMap lookup
+257,Lagos Island,Primary Health Centre Araromi,6.447528,3.406598,Confirmed,Google Maps / OpenStreetMap lookup
+258,Lagos Island,Primary Health Centre Iga Iduganrun,6.46558,3.38963,Confirmed,Google Maps / OpenStreetMap lookup
+259,Lagos Island,Primary Health Centre Oba Adeyinka Oyekan,6.463258,3.392398,Confirmed,Google Maps / OpenStreetMap lookup
+260,Lagos Island,Primary Health Centre Olowogbowo,6.459315,3.382036,Confirmed,Google Maps / OpenStreetMap lookup
+261,Lagos Island,Primary Health Centre Phase 3,6.456602,3.398443,Confirmed,Google Maps / OpenStreetMap lookup
+262,Lagos Island,Primary Health Centre Sura,6.454893,3.403251,Confirmed,Google Maps / OpenStreetMap lookup
+263,Lagos Mainland,Federal Medical Centre Ebute-Metta,6.48425,3.38033,Confirmed,Google Maps / OpenStreetMap lookup
+264,Lagos Mainland,Health Centre Ebute Meta,6.48807,3.38492,Confirmed,Google Maps / OpenStreetMap lookup
+265,Lagos Mainland,Health Centre Harvey Road,6.510333,3.374758,Confirmed,Google Maps / OpenStreetMap lookup
+266,Lagos Mainland,Nigerian Institute Of Medical Research (NIMR),6.5165,3.3747,Confirmed,Google Maps / OpenStreetMap lookup
+267,Lagos Mainland,Primary Health Centre Abule Nla,6.484405,3.371969,Confirmed,Google Maps / OpenStreetMap lookup
+268,Lagos Mainland,Primary Health Centre Aiyetoro,6.492733,3.38708,Confirmed,Google Maps / OpenStreetMap lookup
+269,Lagos Mainland,Primary Health Centre Alhaji Kola Osho,6.520872,3.381648,Confirmed,Google Maps / OpenStreetMap lookup
+270,Lagos Mainland,Primary Health Centre Alli Dawodu,6.52416,3.37661,Confirmed,Google Maps / OpenStreetMap lookup
+271,Lagos Mainland,Primary Health Centre Igbobi Sabe (Oba Salami),6.52239,3.36855,Confirmed,Google Maps / OpenStreetMap lookup
+272,Lagos Mainland,Primary Health Centre Iwaya,6.506825,3.391438,Confirmed,Google Maps / OpenStreetMap lookup
+273,Lagos Mainland,Primary Health Centre Ondo-West,6.4837,3.38037,Confirmed,Google Maps / OpenStreetMap lookup
+274,Lagos Mainland,Primary Health Centre Otto,6.475287,3.379233,Confirmed,Google Maps / OpenStreetMap lookup
+275,Lagos Mainland,Primary Health Centre Otumara,6.47768,3.37458,Confirmed,Google Maps / OpenStreetMap lookup
+276,Lagos Mainland,Primary Health Centre Simpson,6.48844,3.38171,Confirmed,Google Maps / OpenStreetMap lookup
+277,Mushin,General Hospital Mushin,6.531525,3.346252,Confirmed,Google Maps / OpenStreetMap lookup
+278,Mushin,Idi- Araba Health Post,6.51759,3.34478,Confirmed,Google Maps / OpenStreetMap lookup
+279,Mushin,Lagos University Teaching Hospital (Luth) 2,6.51758,3.35392,Confirmed,Google Maps / OpenStreetMap lookup
+280,Mushin,Lagos University Teaching Hospital (Luth) Clinic,6.51758,3.35392,Confirmed,Google Maps / OpenStreetMap lookup
+281,Mushin,Primary Health Centre Ajeabo,6.52005,3.33762,Confirmed,Google Maps / OpenStreetMap lookup
+282,Mushin,Primary Health Centre Ajisegiri,6.57167,3.34478,Confirmed,Google Maps / OpenStreetMap lookup
+283,Mushin,Primary Health Centre Alves,6.51455,3.34477,Confirmed,Google Maps / OpenStreetMap lookup
+284,Mushin,Primary Health Centre Anikulapo,6.516724,3.36731,Confirmed,Google Maps / OpenStreetMap lookup
+285,Mushin,Primary Health Centre Ayantuga,6.533118,3.355202,Confirmed,Google Maps / OpenStreetMap lookup
+286,Mushin,Primary Health Centre Coker,6.54858,3.36169,Confirmed,Google Maps / OpenStreetMap lookup
+287,Mushin,Primary Health Centre Igbo Owu,6.53017,3.34082,Confirmed,Google Maps / OpenStreetMap lookup
+288,Mushin,Primary Health Centre Isolo,6.5272,3.34885,Confirmed,Google Maps / OpenStreetMap lookup
+289,Mushin,Primary Health Centre Itire Ijesha,6.509923,3.33723,Confirmed,Google Maps / OpenStreetMap lookup
+290,Mushin,Primary Health Centre Kajola,6.52712,3.36584,Confirmed,Google Maps / OpenStreetMap lookup
+291,Mushin,Primary Health Centre Palm Avenue,6.536528,3.349811,Confirmed,Google Maps / OpenStreetMap lookup
+292,Ojo,Health Centre Shibiri,6.461792,3.144273,Confirmed,Google Maps / OpenStreetMap lookup
+293,Ojo,Ira Health Post,6.453494,3.211534,Confirmed,Google Maps / OpenStreetMap lookup
+294,Ojo,Nnsb Okoko,6.47361,3.18074,Confirmed,Google Maps / OpenStreetMap lookup
+295,Ojo,Primary Health Centre Afromedia,6.474915,3.179504,Confirmed,Google Maps / OpenStreetMap lookup
+296,Ojo,Primary Health Centre Era Mini,6.47694,3.12414,To check,Registry (GRID3/NHFR): Era PHC - couldn't confirm the 'Mini' part
+297,Ojo,Primary Health Centre Iba,6.507043,3.19856,Confirmed,Google Maps / OpenStreetMap lookup
+298,Ojo,Primary Health Centre Igbede,6.45167,3.16247,Confirmed,Google Maps / OpenStreetMap lookup
+299,Ojo,Primary Health Centre Ijagemo,6.45974,3.2255,Confirmed,Google Maps / OpenStreetMap lookup
+300,Ojo,Primary Health Centre Ijanikin,6.49735,3.118578,Confirmed,Google Maps / OpenStreetMap lookup
+301,Ojo,Primary Health Centre Ijedodo,6.49845,3.24747,Confirmed,Google Maps / OpenStreetMap lookup
+302,Ojo,Primary Health Centre Imude,6.46666,3.115,Confirmed,Google Maps / OpenStreetMap lookup
+303,Ojo,Primary Health Centre Irewe,6.418275,3.14487,Confirmed,Google Maps / OpenStreetMap lookup
+304,Ojo,Primary Health Centre Isagira,6.44312,3.12708,To check,"Registry (GRID3/NHFR): Ishagira PHC, Egan-Ojo (there's also an 'Ishagiri' PHC - check which)"
+305,Ojo,Primary Health Centre Ishashi,6.50232,3.17163,Confirmed,Google Maps / OpenStreetMap lookup
+306,Ojo,Primary Health Centre Kembiri,6.46715,3.18714,Confirmed,Google Maps / OpenStreetMap lookup
+307,Ojo,Primary Health Centre Oba Adeshina,6.50747,3.20035,Confirmed,Google Maps / OpenStreetMap lookup
+308,Ojo,Primary Health Centre Ojo,6.45888,3.20349,Confirmed,Google Maps / OpenStreetMap lookup
+309,Ojo,Primary Health Centre Oke-Ijeun,6.470897,3.1499,Confirmed,Google Maps / OpenStreetMap lookup
+310,Ojo,Primary Health Centre Okokomaiko,6.4642,3.1822,To check,Google Maps: Okokomaiko PHC (Google has two pins for it - check)
+311,Ojo,Primary Health Centre Tedi,6.446402,3.227555,Confirmed,Google Maps / OpenStreetMap lookup
+312,Oshodi Isolo,445 Naf Hospital Ikeja,6.58246,3.34067,Confirmed,Google Maps / OpenStreetMap lookup
+313,Oshodi Isolo,Dauda Ilo,6.556113,3.307407,Confirmed,Google Maps / OpenStreetMap lookup
+314,Oshodi Isolo,General Hospital Isolo,6.527288,3.31892,Confirmed,Google Maps / OpenStreetMap lookup
+315,Oshodi Isolo,Primary Health Centre Ailegun,6.528931,3.300476,Confirmed,Google Maps / OpenStreetMap lookup
+316,Oshodi Isolo,Primary Health Centre Ajao,6.551457,3.324388,Confirmed,Google Maps / OpenStreetMap lookup
+317,Oshodi Isolo,Primary Health Centre Apena,6.50978,3.31494,Confirmed,Google Maps / OpenStreetMap lookup
+318,Oshodi Isolo,Primary Health Centre Ayo Ni,6.556157,3.330873,Confirmed,Google Maps / OpenStreetMap lookup
+319,Oshodi Isolo,Primary Health Centre Ejigbo,6.55215,3.30507,Confirmed,Google Maps / OpenStreetMap lookup
+320,Oshodi Isolo,Primary Health Centre Ewetuntun,6.56682,3.33757,Confirmed,Google Maps / OpenStreetMap lookup
+321,Oshodi Isolo,Primary Health Centre Ilasa,6.517353,3.328734,Confirmed,Google Maps / OpenStreetMap lookup
+322,Oshodi Isolo,Primary Health Centre Ishaga,6.524723,3.328203,Confirmed,Google Maps / OpenStreetMap lookup
+323,Oshodi Isolo,Primary Health Centre Isolo,6.52872,3.3206,Confirmed,Google Maps / OpenStreetMap lookup
+324,Oshodi Isolo,Primary Health Centre Iyana Ejigbo,6.540343,3.299907,Confirmed,Google Maps / OpenStreetMap lookup
+325,Oshodi Isolo,Primary Health Centre Jakande,6.523723,3.301193,Confirmed,Google Maps / OpenStreetMap lookup
+326,Oshodi Isolo,Primary Health Centre Lsdpc,6.531365,3.331113,Confirmed,Google Maps / OpenStreetMap lookup
+327,Oshodi Isolo,Primary Health Centre Mafoluku,6.560681,3.331505,Confirmed,Google Maps / OpenStreetMap lookup
+328,Oshodi Isolo,Primary Health Centre Ogundele,,,No location yet,'Ogundele' not found in registry or Google
+329,Oshodi Isolo,Primary Health Centre Okota,6.509178,3.296505,Confirmed,Google Maps / OpenStreetMap lookup
+330,Oshodi Isolo,Primary Health Centre Ona Iwamimo,6.54449,3.28851,Confirmed,Google Maps / OpenStreetMap lookup
+331,Oshodi Isolo,Primary Health Centre Oshodi,6.55713,3.34869,Confirmed,Google Maps / OpenStreetMap lookup
+332,Oshodi Isolo,Primary Health Centre Shogunle,6.57864,3.34156,Confirmed,Google Maps / OpenStreetMap lookup
+333,Shomolu,General Hospital Somolu,6.536486,3.371952,Confirmed,Google Maps / OpenStreetMap lookup
+334,Shomolu,Primary Health Centre Akinwumi Ambode,6.53507,3.37656,Confirmed,Google Maps / OpenStreetMap lookup
+335,Shomolu,Primary Health Centre Akoka,6.527273,3.384838,Confirmed,Google Maps / OpenStreetMap lookup
+336,Shomolu,Primary Health Centre Ashogbon,6.534998,3.396032,Confirmed,Google Maps / OpenStreetMap lookup
+337,Shomolu,Primary Health Centre Bajulaiye,6.53247,3.38171,Confirmed,Google Maps / OpenStreetMap lookup
+338,Shomolu,Primary Health Centre Cms,6.53591,3.3899,Confirmed,Google Maps / OpenStreetMap lookup
+339,Shomolu,Primary Health Centre Eva Adelaja,6.54316,3.39264,Confirmed,Google Maps / OpenStreetMap lookup
+340,Shomolu,Primary Health Centre Ibijoke Sanwoolu,6.52719,3.377,Confirmed,Google Maps / OpenStreetMap lookup
+341,Shomolu,Primary Health Centre Mafowoku,6.54307,3.38401,Confirmed,Google Maps / OpenStreetMap lookup
+342,Shomolu,Primary Health Centre Ohekenu,6.526572,3.368357,Confirmed,Google Maps / OpenStreetMap lookup
+343,Shomolu,Primary Health Centre Oloja (Late Hon Adewale Awokoya PHC)),6.53565,3.38519,Confirmed,Google Maps / OpenStreetMap lookup
+344,Shomolu,Primary Health Centre Wright,6.539917,3.371704,Confirmed,Google Maps / OpenStreetMap lookup
+345,Surulere,General Hospital Randle,6.508174,3.357477,Confirmed,Google Maps / OpenStreetMap lookup
+346,Surulere,Primary Health Centre Airways,6.488755,3.330365,Confirmed,Google Maps / OpenStreetMap lookup
+347,Surulere,Primary Health Centre Akerele,6.50561,3.354748,Confirmed,Google Maps / OpenStreetMap lookup
+348,Surulere,Primary Health Centre Anjorin,6.51065,3.34633,Confirmed,Google Maps / OpenStreetMap lookup
+349,Surulere,Primary Health Centre Baruwa Ijesha,6.50049,3.33289,Confirmed,Google Maps / OpenStreetMap lookup
+350,Surulere,Primary Health Centre Coker Aguda,6.488448,3.338205,Confirmed,Google Maps / OpenStreetMap lookup
+351,Surulere,Primary Health Centre Ejire,6.502686,3.33728,Confirmed,Google Maps / OpenStreetMap lookup
+352,Surulere,Primary Health Centre Femi Gbajabiamila,6.501213,3.365978,Confirmed,Google Maps / OpenStreetMap lookup
+353,Surulere,Primary Health Centre Iponri,6.486483,3.362423,Confirmed,Google Maps / OpenStreetMap lookup
+354,Surulere,Primary Health Centre Orile Coker,6.48025,3.33687,To check,"Registry (GRID3/NHFR): Orile PHC, Surulere (old match was Coker Aguda, which is its own row)"
+355,Surulere,Rgh Mcc Gbaja,6.5057,3.3533,Confirmed,Google Maps / OpenStreetMap lookup

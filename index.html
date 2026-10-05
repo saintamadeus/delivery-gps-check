@@ -1,0 +1,1509 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>Delivery GPS Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a working tool. Toolbar, status tiles that double as filters, then map beside the delivery list; second tab edits facility locations. */
+:root{
+  --bg:#f3f5f1; --surface:#ffffff; --sunk:#e9ede6; --ink:#16211d; --muted:#5a6863; --line:#d6ddd3;
+  --accent:#0d6b66; --accent-ink:#ffffff; --accent-soft:#dcefec;
+  --ok:#2c7d47; --ok-soft:#e1f1e5; --far:#c13d27; --far-soft:#f9e3de; --warn:#a66d0b; --warn-soft:#f6ecd6;
+  --none:#6f7b76; --none-soft:#e7ebe8; --ref:#25302c; --dot:#b9c4bd; --label:#7d8a84;
+  --f-display:"Archivo","Arial Narrow",Arial,sans-serif; --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111715; --surface:#18201d; --sunk:#1f2925; --ink:#e6ece8; --muted:#9aa8a2; --line:#2d3a35;
+  --accent:#4fb3aa; --accent-ink:#06120f; --accent-soft:#18332f;
+  --ok:#5cc07c; --ok-soft:#173022; --far:#f0806a; --far-soft:#3a1e18; --warn:#e3ad4a; --warn-soft:#352914;
+  --none:#97a49e; --none-soft:#232c29; --ref:#e6ece8; --dot:#34413b; --label:#7f8d87; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#111715; --surface:#18201d; --sunk:#1f2925; --ink:#e6ece8; --muted:#9aa8a2; --line:#2d3a35;
+  --accent:#4fb3aa; --accent-ink:#06120f; --accent-soft:#18332f;
+  --ok:#5cc07c; --ok-soft:#173022; --far:#f0806a; --far-soft:#3a1e18; --warn:#e3ad4a; --warn-soft:#352914;
+  --none:#97a49e; --none-soft:#232c29; --ref:#e6ece8; --dot:#34413b; --label:#7f8d87; color-scheme:dark }
+
+
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.leaflet-container {
+	overflow: hidden;
+	}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	  -webkit-user-drag: none;
+	}
+
+.leaflet-tile::selection {
+	background: transparent;
+}
+
+.leaflet-safari .leaflet-tile {
+	image-rendering: -webkit-optimize-contrast;
+	}
+
+.leaflet-safari .leaflet-tile-container {
+	width: 1600px;
+	height: 1600px;
+	-webkit-transform-origin: 0 0;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	display: block;
+	}
+
+
+.leaflet-container .leaflet-overlay-pane svg {
+	max-width: none !important;
+	max-height: none !important;
+	}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+	max-width: none !important;
+	max-height: none !important;
+	width: auto;
+	padding: 0;
+	}
+
+.leaflet-container img.leaflet-tile {
+	
+	mix-blend-mode: plus-lighter;
+}
+
+.leaflet-container.leaflet-touch-zoom {
+	-ms-touch-action: pan-x pan-y;
+	touch-action: pan-x pan-y;
+	}
+.leaflet-container.leaflet-touch-drag {
+	-ms-touch-action: pinch-zoom;
+	
+	touch-action: none;
+	touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.leaflet-container {
+	-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.leaflet-tile-loaded {
+	visibility: inherit;
+	}
+.leaflet-zoom-box {
+	width: 0;
+	height: 0;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	z-index: 800;
+	}
+
+.leaflet-overlay-pane svg {
+	-moz-user-select: none;
+	}
+
+.leaflet-pane         { z-index: 400; }
+
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+
+.leaflet-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.lvml {
+	behavior: url(#default#VML);
+	display: inline-block;
+	position: absolute;
+	}
+
+
+
+
+.leaflet-control {
+	position: relative;
+	z-index: 800;
+	pointer-events: visiblePainted; 
+	pointer-events: auto;
+	}
+.leaflet-top,
+.leaflet-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.leaflet-top {
+	top: 0;
+	}
+.leaflet-right {
+	right: 0;
+	}
+.leaflet-bottom {
+	bottom: 0;
+	}
+.leaflet-left {
+	left: 0;
+	}
+.leaflet-control {
+	float: left;
+	clear: both;
+	}
+.leaflet-right .leaflet-control {
+	float: right;
+	}
+.leaflet-top .leaflet-control {
+	margin-top: 10px;
+	}
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 10px;
+	}
+.leaflet-left .leaflet-control {
+	margin-left: 10px;
+	}
+.leaflet-right .leaflet-control {
+	margin-right: 10px;
+	}
+
+
+
+
+.leaflet-fade-anim .leaflet-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	opacity: 1;
+	}
+.leaflet-zoom-animated {
+	-webkit-transform-origin: 0 0;
+	    -ms-transform-origin: 0 0;
+	        transform-origin: 0 0;
+	}
+svg.leaflet-zoom-animated {
+	will-change: transform;
+}
+
+.leaflet-zoom-anim .leaflet-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	        transition: none;
+	}
+
+.leaflet-zoom-anim .leaflet-zoom-hide {
+	visibility: hidden;
+	}
+
+
+
+
+.leaflet-interactive {
+	cursor: pointer;
+	}
+.leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+	}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+	cursor: crosshair;
+	}
+.leaflet-popup-pane,
+.leaflet-control {
+	cursor: auto;
+	}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	cursor:         grabbing;
+	}
+
+
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+	pointer-events: none;
+	}
+
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+	pointer-events: visiblePainted; 
+	pointer-events: auto;
+	}
+
+
+
+.leaflet-container {
+	background: #ddd;
+	outline-offset: 1px;
+	}
+.leaflet-container a {
+	color: #0078A8;
+	}
+.leaflet-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+
+
+
+.leaflet-container {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-size: 0.75rem;
+	line-height: 1.5;
+	}
+
+
+
+
+.leaflet-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.leaflet-bar a {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+	background-color: #f4f4f4;
+	}
+.leaflet-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.leaflet-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.leaflet-bar a.leaflet-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+
+.leaflet-touch .leaflet-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+.leaflet-touch .leaflet-bar a:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	}
+.leaflet-touch .leaflet-bar a:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	}
+
+
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}
+
+
+
+
+.leaflet-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.leaflet-control-layers-toggle {
+	background-image: url(images/layers.png);
+	width: 36px;
+	height: 36px;
+	}
+.leaflet-retina .leaflet-control-layers-toggle {
+	background-image: url(images/layers-2x.png);
+	background-size: 26px 26px;
+	}
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+	display: none;
+	}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.leaflet-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.leaflet-control-layers-scrollbar {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding-right: 5px;
+	}
+.leaflet-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.leaflet-control-layers label {
+	display: block;
+	font-size: 13px;
+	font-size: 1.08333em;
+	}
+.leaflet-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+
+
+.leaflet-default-icon-path { 
+	background-image: url(images/marker-icon.png);
+	}
+
+
+
+
+.leaflet-container .leaflet-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin: 0;
+	}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	line-height: 1.4;
+	}
+.leaflet-control-attribution a {
+	text-decoration: none;
+	}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+	text-decoration: underline;
+	}
+.leaflet-attribution-flag {
+	display: inline !important;
+	vertical-align: baseline !important;
+	width: 1em;
+	height: 0.6669em;
+	}
+.leaflet-left .leaflet-control-scale {
+	margin-left: 5px;
+	}
+.leaflet-bottom .leaflet-control-scale {
+	margin-bottom: 5px;
+	}
+.leaflet-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	white-space: nowrap;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	background: rgba(255, 255, 255, 0.8);
+	text-shadow: 1px 1px #fff;
+	}
+.leaflet-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	box-shadow: none;
+	}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+
+
+
+
+.leaflet-popup {
+	position: absolute;
+	text-align: center;
+	margin-bottom: 20px;
+	}
+.leaflet-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.leaflet-popup-content {
+	margin: 13px 24px 13px 20px;
+	line-height: 1.3;
+	font-size: 13px;
+	font-size: 1.08333em;
+	min-height: 1px;
+	}
+.leaflet-popup-content p {
+	margin: 17px 0;
+	margin: 1.3em 0;
+	}
+.leaflet-popup-tip-container {
+	width: 40px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	margin-top: -1px;
+	margin-left: -20px;
+	overflow: hidden;
+	pointer-events: none;
+	}
+.leaflet-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+
+	margin: -10px auto 0;
+	pointer-events: auto;
+
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: white;
+	color: #333;
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.leaflet-container a.leaflet-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: none;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	font: 16px/24px Tahoma, Verdana, sans-serif;
+	color: #757575;
+	text-decoration: none;
+	background: transparent;
+	}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+	color: #585858;
+	}
+.leaflet-popup-scrolled {
+	overflow: auto;
+	}
+
+.leaflet-oldie .leaflet-popup-content-wrapper {
+	-ms-zoom: 1;
+	}
+.leaflet-oldie .leaflet-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+	border: 1px solid #999;
+	}
+
+
+
+
+.leaflet-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+
+
+
+
+.leaflet-tooltip {
+	position: absolute;
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	color: #222;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	}
+.leaflet-tooltip.leaflet-interactive {
+	cursor: pointer;
+	pointer-events: auto;
+	}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	position: absolute;
+	pointer-events: none;
+	border: 6px solid transparent;
+	background: transparent;
+	content: "";
+	}
+
+
+
+.leaflet-tooltip-bottom {
+	margin-top: 6px;
+}
+.leaflet-tooltip-top {
+	margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+	left: 50%;
+	margin-left: -6px;
+	}
+.leaflet-tooltip-top:before {
+	bottom: 0;
+	margin-bottom: -12px;
+	border-top-color: #fff;
+	}
+.leaflet-tooltip-bottom:before {
+	top: 0;
+	margin-top: -12px;
+	margin-left: -6px;
+	border-bottom-color: #fff;
+	}
+.leaflet-tooltip-left {
+	margin-left: -6px;
+}
+.leaflet-tooltip-right {
+	margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	top: 50%;
+	margin-top: -6px;
+	}
+.leaflet-tooltip-left:before {
+	right: 0;
+	margin-right: -12px;
+	border-left-color: #fff;
+	}
+.leaflet-tooltip-right:before {
+	left: 0;
+	margin-left: -12px;
+	border-right-color: #fff;
+	}
+
+
+
+@media print {
+	
+	.leaflet-control {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+		}
+	}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:18px 48px}
+h1,h2,h3{font-family:var(--f-display);font-stretch:85%;text-wrap:balance;margin:0}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:14px}
+.top .kicker{font-size:12px;color:var(--muted);letter-spacing:.04em}
+.top h1{font-size:30px;font-weight:750;letter-spacing:-.01em;line-height:1.05}
+.tabs{display:flex;gap:4px;background:var(--sunk);padding:4px;border-radius:9px}
+.tab{border:0;background:transparent;color:var(--muted);font:600 13px var(--f-body);padding:8px 12px;border-radius:6px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.tab{white-space:nowrap}
+.tab .n{display:inline-block;font:600 11px var(--f-body);background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:1px 7px;margin-left:4px}
+.tab .n:empty{display:none}
+td button{white-space:nowrap}
+.leaflet-bar a.leaflet-disabled{background:var(--sunk);color:var(--muted)}
+button,.btn{font:600 13px var(--f-body);border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;line-height:1.2}
+button:hover,.btn:hover{border-color:var(--muted)}
+button.primary,.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.link{border:0;background:none;padding:0;color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=text],input[type=number],input[type=search],select,textarea{font:14px var(--f-body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:7px 9px;max-width:100%}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.bar .grow{flex:1 1 220px;min-width:0;color:var(--muted)}
+.bar .grow b{color:var(--ink);font-weight:600}
+.limit{display:flex;align-items:center;gap:8px;color:var(--muted);flex-wrap:wrap}
+.limit input{width:84px}
+.filebtn{position:relative;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0}
+@media (max-width:860px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--surface);position:relative}
+.tile .v{font:700 26px/1 var(--f-display);font-stretch:85%;font-variant-numeric:tabular-nums}
+.tile .l{font-weight:500;color:var(--muted);font-size:12.5px}
+.tile::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--c)}
+.tile[aria-pressed="true"]{border-color:var(--c);box-shadow:0 0 0 1px var(--c) inset}
+.t-ok{--c:var(--ok)} .t-far{--c:var(--far)} .t-nogps{--c:var(--none)} .t-unknown{--c:var(--warn)} .t-noref{--c:var(--warn)}
+.alert{display:flex;gap:10px;align-items:flex-start;background:var(--far-soft);border:1px solid var(--far);border-radius:9px;padding:10px 12px;margin-bottom:12px}
+.alert b{color:var(--far)}
+.alert.gh{background:var(--warn-soft);border-color:var(--warn);flex-wrap:wrap;align-items:center}
+.alert.gh b{color:var(--warn)}
+.main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+.mapbox{position:sticky;top:calc(env(safe-area-inset-top,0px) + 8px);background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+@media (max-width:900px){.mapbox{position:relative;top:0}}
+#map{height:560px;background:var(--sunk)}
+@media (max-width:900px){#map{height:380px}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;padding:8px 12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-width:0}
+.listhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line)}
+.listhead h2{font-size:17px;font-weight:700}
+.rows{max-height:720px;overflow:auto}
+.row{display:grid;grid-template-columns:4px minmax(0,1fr);gap:0 10px;padding:10px 12px 10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.row:hover,.row.sel{background:var(--sunk)}
+.row .stripe{border-radius:0 3px 3px 0;background:var(--c)}
+.row .l1{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.row .fac{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.row .dist{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:500;white-space:nowrap;color:var(--c)}
+.row .meta{color:var(--muted);font-size:12.5px;overflow-wrap:anywhere}
+.row .items{font-size:12.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.chip{font-size:11.5px;font-weight:600;padding:2px 7px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+.chip.far{background:var(--far-soft);color:var(--far)} .chip.warn{background:var(--warn-soft);color:var(--warn)}
+.fix{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+.fix select{max-width:260px}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.empty h3{color:var(--ink);font-size:18px;margin-bottom:6px}
+.note{font-size:12.5px;color:var(--muted)}
+.mode{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:4px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.mode.ro{background:var(--none-soft);color:var(--none)}
+.mode.local{background:var(--warn-soft);color:var(--warn)}
+.flist{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ftools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px;border-bottom:1px solid var(--line)}
+.ftools input[type=search]{flex:1 1 200px;min-width:0}
+.seg{display:inline-flex;background:var(--sunk);border-radius:8px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:6px 10px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--sunk);position:sticky;top:0}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.st{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.st.ok{background:var(--ok-soft);color:var(--ok)} .st.verify{background:var(--warn-soft);color:var(--warn)} .st.missing{background:var(--far-soft);color:var(--far)} .st.edited{background:var(--accent-soft);color:var(--accent)}
+.edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:8px;align-items:end;background:var(--sunk);padding:10px;border-radius:8px}
+@media (max-width:640px){.edit{grid-template-columns:minmax(0,1fr)}}
+.edit label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);font-weight:600}
+.edit .acts{display:flex;gap:6px}
+.err{color:var(--far);font-size:12.5px}
+.addform{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;align-items:end;padding:12px;border-top:1px solid var(--line)}
+@media (max-width:760px){.addform{grid-template-columns:minmax(0,1fr)}}
+.addform label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);font-weight:600}
+.lga-label{font:600 10.5px var(--f-body);color:var(--label);white-space:nowrap;letter-spacing:.03em;text-transform:uppercase;pointer-events:none}
+.leaflet-container{font-family:var(--f-body);background:var(--sunk)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--ink)}
+.leaflet-popup-content{margin:10px 12px;font-size:13px;line-height:1.4}
+.leaflet-bar a{background:var(--surface);color:var(--ink);border-bottom-color:var(--line)}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:8px;font-weight:600;font-size:13px;z-index:2000}
+@media (prefers-reduced-motion:no-preference){.row{transition:background .12s}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="kicker">Lagos FP last-mile distribution</div>
+      <h1>Delivery GPS Check</h1>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-check" aria-selected="true" aria-controls="view-check">Check deliveries</button>
+      <button class="tab" role="tab" id="tab-fac" aria-selected="false" aria-controls="view-fac">Facility locations <span class="n" id="tab-fac-n"></span></button>
+    </div>
+  </header>
+
+  <section id="view-check" role="tabpanel" aria-labelledby="tab-check">
+    <div class="bar">
+      <span class="btn primary filebtn">Upload tracker file<input type="file" id="file" accept=".xlsx,.xls,.csv" aria-label="Upload tracker file"></span>
+      <button id="load-sample">Load Sept 2026 example</button>
+      <div class="grow" id="loaded">Upload the Excel export from the delivery form. Each row is one delivery.</div>
+      <label class="limit" for="limit">Flag deliveries more than <input type="number" id="limit" min="50" step="50" value="500"> m from the facility</label>
+    </div>
+    <div class="err" id="file-err" hidden></div>
+
+    <div class="tiles" id="tiles" hidden>
+      <button class="tile t-ok" data-f="ok" aria-pressed="false"><span class="v" id="n-ok">0</span><span class="l">At the facility</span></button>
+      <button class="tile t-far" data-f="far" aria-pressed="false"><span class="v" id="n-far">0</span><span class="l">Too far away</span></button>
+      <button class="tile t-nogps" data-f="nogps" aria-pressed="false"><span class="v" id="n-nogps">0</span><span class="l">No GPS recorded</span></button>
+      <button class="tile t-unknown" data-f="unknown" aria-pressed="false"><span class="v" id="n-unknown">0</span><span class="l">Name not recognised</span></button>
+      <button class="tile t-noref" data-f="noref" aria-pressed="false"><span class="v" id="n-noref">0</span><span class="l">Facility has no location yet</span></button>
+    </div>
+    <div class="alert" id="spot-alert" hidden></div>
+
+    <div class="main">
+      <div class="mapbox">
+        <div id="map" aria-label="Map of Lagos showing deliveries and facilities"></div>
+        <div class="legend">
+          <span><i style="background:var(--ok)"></i>At the facility</span>
+          <span><i style="background:var(--far)"></i>Too far away</span>
+          <span><i style="border:2px solid var(--ref);background:transparent;width:9px;height:9px"></i>Where the facility is</span>
+          <span><i style="background:var(--dot)"></i>Other health facilities in Lagos</span>
+        </div>
+      </div>
+      <div class="list">
+        <div class="listhead">
+          <h2 id="list-title">Deliveries</h2>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="link" id="clear-filter" hidden>Show all</button>
+            <button id="dl-results" disabled>Download results (Excel)</button>
+          </div>
+        </div>
+        <div class="rows" id="rows">
+          <div class="empty"><h3>No tracker loaded yet</h3>Upload this month's export, or load the September example to see how it works. The map already shows the <span id="fac-count"></span> facilities on the distribution plan.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-fac" role="tabpanel" aria-labelledby="tab-fac" hidden>
+    <div class="bar" style="margin-bottom:12px">
+      <div class="grow" id="fac-summary"></div>
+      <span class="mode" id="mode">Loading…</span>
+      <button id="dl-fac">Download facility list (Excel)</button>
+    </div>
+    <div class="alert gh" id="gh-pending" hidden></div>
+    <p class="note" id="gh-note" hidden></p>
+    <div class="flist">
+      <div class="ftools">
+        <input type="search" id="fac-q" placeholder="Search facility or LGA" aria-label="Search facilities">
+        <div class="seg" role="group" aria-label="Show">
+          <button data-s="todo" aria-pressed="true">Need attention</button>
+          <button data-s="all" aria-pressed="false">All</button>
+          <button data-s="edited" aria-pressed="false">Changed here</button>
+        </div>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>S/N</th><th>LGA</th><th>Facility</th><th>Location</th><th>Status</th><th>Where it came from</th><th></th></tr></thead>
+          <tbody id="fac-rows"></tbody>
+        </table>
+      </div>
+      <form class="addform" id="add-form" hidden>
+        <label>LGA<select id="add-lga"></select></label>
+        <label>Facility name<input type="text" id="add-name" placeholder="e.g. Primary Health Centre Ogudu"></label>
+        <label>Coordinates<input type="text" id="add-coords" placeholder="6.5715, 3.3912"></label>
+        <label>Where it came from<input type="text" id="add-note" placeholder="Field visit, Google Maps…"></label>
+        <button class="primary" type="submit">Add facility</button>
+        <div class="err" id="add-err" hidden></div>
+      </form>
+    </div>
+    <p class="note">Coordinates are latitude, longitude in decimal degrees, as Google Maps shows them when you right-click a spot (Lagos is about 6.4–6.7, 2.7–4.3). Changes apply to every check made with this page.</p>
+  </section>
+</div>
+
+<script src="lib/leaflet-1.9.4.js"></script>
+<script src="lib/xlsx-0.18.5.full.min.js"></script>
+<script>
+/* ---- core logic: shared by the page and by the node test ---- */
+var Core = (function () {
+  var STOP = {primary:1,health:1,healthcare:1,care:1,centre:1,center:1,centr:1,cntr:1,phc:1,ophc:1,hc:1,post:1,hp:1,
+    clinic:1,the:1,of:1,and:1,lga:1,lagos:1,comprehensive:1,mdg:1,sdg:1,lcda:1};
+  var LGA_FIX = {'ijaiye':'ijaye','isolo':'isolo','somolu':'shomolu','eti-osa':'eti osa','etiosa':'eti osa','lekki':'lekki'};
+
+  function lgaKey(s) {
+    s = String(s || '').toLowerCase().replace(/[_\/\-]+/g, ' ').replace(/[^a-z ]/g, '').replace(/\s+/g, ' ').trim();
+    return s.split(' ').map(function (w) { return LGA_FIX[w] || w; }).join(' ');
+  }
+  function kind(s) {
+    s = ' ' + s + ' ';
+    if (/\b(gh|general hosp\w*|genaral hosp\w*)\b/.test(s)) return 'gh';
+    if (/\b(mcc|maternal|mother and child)\b/.test(s)) return 'mcc';
+    if (/\b(hp|health post)\b/.test(s)) return 'hp';
+    if (/\bhospital\b/.test(s)) return 'hosp';
+    return 'phc';
+  }
+  function core(name, lgaWords) {
+    var s = String(name || '').toLowerCase()
+      .replace(/[àáâä]/g, 'a').replace(/[èéêë]/g, 'e').replace(/[ìíîï]/g, 'i').replace(/[òóôö]/g, 'o').replace(/[ùúûü]/g, 'u')
+      .replace(/([a-z])0|0([a-z])/g, function (m, a, b) { return (a || '') + 'o' + (b || ''); })
+      .replace(/primary health ?cent(re|er)/g, ' ').replace(/general hospital/g, ' gh ')
+      .replace(/maternal and child health cent(re|er)/g, ' mcc ')
+      .replace(/[^a-z0-9 ]+/g, ' ');
+    var k = kind(s);
+    var raw = s.split(/\s+/).filter(Boolean), toks = [];
+    for (var i = 0; i < raw.length; i++) {
+      var t = raw[i];
+      if (t.length === 1 && /[a-z]/.test(t) && i + 1 < raw.length) { raw[i + 1] = t + raw[i + 1]; continue; }
+      if (!STOP[t] && t !== 'gh' && t !== 'mcc' && t !== 'hospital' && t !== 'general' && !(lgaWords && lgaWords[t])) toks.push(t);
+    }
+    return { kind: k, toks: toks, text: toks.join('') };
+  }
+  function bigrams(s) { var o = {}; for (var i = 0; i < s.length - 1; i++) { var b = s.substr(i, 2); o[b] = (o[b] || 0) + 1; } return o; }
+  function dice(a, b) {
+    if (!a || !b) return 0; if (a === b) return 1; if (a.length < 2 || b.length < 2) return 0;
+    var A = bigrams(a), B = bigrams(b), n = 0, ta = 0, tb = 0, k;
+    for (k in A) { ta += A[k]; if (B[k]) n += Math.min(A[k], B[k]); }
+    for (k in B) tb += B[k];
+    return 2 * n / (ta + tb);
+  }
+  function score(typed, fac) {
+    var lw = {}; lgaKey(fac.lga).split(' ').forEach(function (w) { if (w.length > 2) lw[w] = 1; });
+    var a = core(typed, lw), b = fac._core || (fac._core = core(fac.name, lw));
+    if (!a.toks.length) a = core(typed);
+    if (!b.toks.length) b = fac._core = core(fac.name);
+    var s = dice(a.text, b.text);
+    // a typed name is often a shortened form: reward when every typed token appears in the facility name
+    if (a.toks.length && a.toks.every(function (t) { return b.toks.some(function (u) { return dice(t, u) >= 0.8; }); })) s = Math.max(s, 0.86);
+    if (a.kind === b.kind) s += 0.06; else if (a.kind === 'gh' || b.kind === 'gh') s -= 0.25;
+    return s;
+  }
+  // facilities: [{sn, lga, name, lat, lon, status}] ; aliases: {key -> sn}
+  function aliasKey(lga, typed) {
+    return ('a.' + lgaKey(lga) + '.' + core(typed).text).replace(/[^A-Za-z0-9_.~:@+-]/g, '').slice(0, 180);
+  }
+  function match(typed, lga, facilities, aliases) {
+    var ak = aliasKey(lga, typed);
+    if (aliases && aliases[ak] != null) {
+      var f = facilities.filter(function (x) { return String(x.sn) === String(aliases[ak]); })[0];
+      if (f) return { fac: f, score: 1, how: 'saved' };
+    }
+    var lk = lgaKey(lga), pool = facilities.filter(function (f) { return lgaKey(f.lga) === lk; });
+    if (!pool.length) pool = facilities;
+    var best = null, bs = -1, second = -1;
+    pool.forEach(function (f) { var s = score(typed, f); if (s > bs) { second = bs; bs = s; best = f; } else if (s > second) second = s; });
+    if (best && bs >= 0.72 && bs - second >= 0.04) return { fac: best, score: bs, how: 'auto' };
+    // the LGA may have been picked wrongly on the phone: try all of Lagos, but only accept a strong match
+    if (pool.length !== facilities.length) {
+      var gb = null, gs = -1;
+      facilities.forEach(function (f) { var s = score(typed, f); if (s > gs) { gs = s; gb = f; } });
+      if (gb && gs >= 0.9) return { fac: gb, score: gs, how: 'auto', otherLga: true };
+    }
+    return { fac: null, score: bs, how: 'none', guess: bs >= 0.5 ? best : null };
+  }
+  function metres(a, b, c, d) {
+    var p = Math.PI / 180, x = Math.pow(Math.sin((c - a) * p / 2), 2) + Math.cos(a * p) * Math.cos(c * p) * Math.pow(Math.sin((d - b) * p / 2), 2);
+    return 2 * 6371000 * Math.asin(Math.sqrt(x));
+  }
+
+  var LABELS = { cdfemale: 'Female condom', cdmale: 'Male condom', depo: 'Depo-Provera', exluton: 'Exluton', microgynon: 'Microgynon',
+    iud: 'IUCD', noristerat: 'Noristerat', implanon: 'Implanon NXT', jadelle: 'Jadelle', levoplant: 'Levoplant', dmpasc: 'Sayana Press',
+    cyclebeads: 'Cycle Beads', needles_syringes: 'Needles & syringes', homornal_iud: 'Hormonal IUD' };
+  var BATCH_FOR = { fc: 'cdfemale', mc: 'cdmale', depo: 'depo', exluton: 'exluton', microgynon: 'microgynon', iud: 'iud', noristerat: 'noristerat',
+    implanonnxt: 'implanon', jadelle: 'jadelle', levoplant: 'levoplant', dmpasc: 'dmpasc', needles_syringes: 'needles_syringes', homornal_iud: 'homornal_iud' };
+
+  function cleanKey(h) { return String(h || '').trim().replace(/^data-/, '').replace(/^page\d+-/, '').replace(/^meta-/, '').replace(/^_+/, ''); }
+  function blank(v) { return v === null || v === undefined || String(v).trim() === '' || String(v).trim() === '.'; }
+
+  // rows: array of arrays incl. header row somewhere near the top
+  function parseTracker(rows) {
+    var hi = -1;
+    for (var i = 0; i < Math.min(rows.length, 15); i++) {
+      var keys = (rows[i] || []).map(function (h) { return cleanKey(h).toLowerCase(); });
+      if (keys.some(function (k) { return /sdp_name|facility|site ?name/.test(k); })) { hi = i; break; }
+    }
+    if (hi < 0) throw new Error('Could not find the column headings. The file needs a facility name column (sdp_name) and a location column.');
+    var keys = rows[hi].map(cleanKey), low = keys.map(function (k) { return k.toLowerCase(); });
+    function col(re) { for (var j = 0; j < low.length; j++) if (re.test(low[j])) return j; return -1; }
+    var cLoc = col(/^location$|^gps$|^_?geopoint$/), cLat = col(/latitude$/), cLon = col(/longitude$/),
+      cAcc = col(/accuracy$|precision$/), cLga = col(/^lga$|lga_name|^lga\b/), cName = col(/sdp_name|^facility|site ?name/),
+      cDate = col(/date_time|^date|submission_time|^start$|^end$/), cCom = col(/^commodity$|^commodities$/);
+    var qtyCols = [];
+    keys.forEach(function (k, j) {
+      var l = low[j], m = l.match(/^(.*)_qty$/);
+      var c = m ? m[1] : (LABELS[l] ? l : null);
+      if (c && LABELS[c]) {
+        var bj = -1; low.forEach(function (bk, x) { if (/^batch_/.test(bk) && BATCH_FOR[bk.slice(6)] === c) bj = x; });
+        qtyCols.push({ c: c, j: j, b: bj });
+      }
+    });
+    var out = [];
+    for (var r = hi + 1; r < rows.length; r++) {
+      var row = rows[r] || []; if (!row.length || row.every(blank)) continue;
+      var name = cName >= 0 ? String(row[cName] || '').trim() : '';
+      var lat = null, lon = null;
+      if (cLoc >= 0 && !blank(row[cLoc])) {
+        var parts = String(row[cLoc]).split(/[,\s]+/).filter(Boolean).map(Number);
+        if (parts.length >= 2 && isFinite(parts[0]) && isFinite(parts[1])) { lat = parts[0]; lon = parts[1]; }
+      } else if (cLat >= 0 && cLon >= 0 && !blank(row[cLat]) && !blank(row[cLon])) { lat = +row[cLat]; lon = +row[cLon]; }
+      if (lat !== null && (Math.abs(lat) > 90 || Math.abs(lon) > 180 || (lat === 0 && lon === 0))) { lat = lon = null; }
+      var acc = cAcc >= 0 && !blank(row[cAcc]) ? +row[cAcc] : null;
+      var items = [];
+      qtyCols.forEach(function (q) {
+        var v = row[q.j]; if (blank(v) || !isFinite(+v) || +v === 0) return;
+        items.push({ c: q.c, label: LABELS[q.c], qty: +v, batch: q.b >= 0 && !blank(row[q.b]) ? String(row[q.b]).trim() : '' });
+      });
+      var d = cDate >= 0 ? row[cDate] : null, date = null;
+      if (d instanceof Date) date = d; else if (!blank(d)) { var t = new Date(String(d)); if (!isNaN(t)) date = t; }
+      out.push({ row: r + 1, name: name, lga: cLga >= 0 ? String(row[cLga] || '').trim() : '', lat: lat, lon: lon, acc: acc,
+        date: date, items: items, commodity: cCom >= 0 ? String(row[cCom] || '') : '' });
+    }
+    return out;
+  }
+
+  // deliveries from parseTracker; facilities with lat/lon; opts {limit, aliases}
+  function check(deliveries, facilities, opts) {
+    var limit = opts.limit || 500;
+    deliveries.forEach(function (d) {
+      var m = match(d.name, d.lga, facilities, opts.aliases);
+      d.fac = m.fac; d.how = m.how; d.otherLga = !!m.otherLga; d.guess = m.guess || null; d.dist = null; d.flags = [];
+      if (d.lat === null) d.status = 'nogps';
+      else if (!d.fac) d.status = 'unknown';
+      else if (d.fac.lat == null) d.status = 'noref';
+      else {
+        d.dist = metres(d.lat, d.lon, d.fac.lat, d.fac.lon);
+        d.status = d.dist > limit ? 'far' : 'ok';
+      }
+      if (d.fac && d.fac.status === 'verify') d.flags.push('refcheck');
+      if (d.otherLga) d.flags.push('otherlga');
+      if (d.acc != null && d.acc > 50) d.flags.push('weak');
+    });
+    // same spot used for several different facilities (within 60 m)
+    var withGps = deliveries.filter(function (d) { return d.lat !== null; });
+    withGps.forEach(function (d) {
+      var near = withGps.filter(function (e) { return metres(d.lat, d.lon, e.lat, e.lon) <= 60; });
+      var names = {}; near.forEach(function (e) { names[e.fac ? 'f' + e.fac.sn : 'n' + core(e.name).text] = 1; });
+      var n = Object.keys(names).length;
+      if (n >= 3) { d.flags.push('samespot'); d.spotCount = n; }
+    });
+    return deliveries;
+  }
+  return { lgaKey: lgaKey, core: core, match: match, aliasKey: aliasKey, metres: metres, parseTracker: parseTracker, check: check, LABELS: LABELS };
+})();
+if (typeof module !== 'undefined') module.exports = Core;
+
+var DATA = {"facilities":[{"sn":1,"lga":"Agege","name":"Agege - Promise Medical Centre","lat":6.61511,"lon":3.3126,"status":"ok","note":"auto found"},{"sn":2,"lga":"Agege","name":"Betta Hospital","lat":6.626499,"lon":3.308796,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":3,"lga":"Agege","name":"General Hospital Orile Agege","lat":6.634995,"lon":3.303487,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":4,"lga":"Agege","name":"Health Post Ajegunle","lat":6.616949,"lon":3.330511,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":5,"lga":"Agege","name":"Papa Ashafa Health Post","lat":6.622236,"lon":3.308497,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":6,"lga":"Agege","name":"Primary Health Centre Dopemu","lat":6.611166,"lon":3.315179,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":7,"lga":"Agege","name":"Primary Health Centre Iloro","lat":6.611365,"lon":3.32315,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":8,"lga":"Agege","name":"Primary Health Centre Kwakwa Uku","lat":6.621047,"lon":3.323529,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":9,"lga":"Agege","name":"Primary Health Centre Odunbakun","lat":6.622872,"lon":3.307838,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":10,"lga":"Agege","name":"Primary Health Centre Powerline","lat":6.633976,"lon":3.310271,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":11,"lga":"Agege","name":"Primary Health Centre Sango (Lagos)","lat":6.62548,"lon":3.32504,"status":"ok","note":"auto found"},{"sn":12,"lga":"Agege","name":"Primary Health Centre Soretire","lat":6.63431,"lon":3.30632,"status":"ok","note":"auto found"},{"sn":13,"lga":"Agege","name":"Primary health centre Ibijoke Claudia Sanwoolu","lat":6.627125,"lon":3.307467,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":14,"lga":"Ajeromi Ifelodun","name":"Asiwaju Bola Ahmed Tinubu Comprehensive centre","lat":6.464837,"lon":3.327984,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":15,"lga":"Ajeromi Ifelodun","name":"General Hospital Ajeromi","lat":6.45523,"lon":3.332924,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":16,"lga":"Ajeromi Ifelodun","name":"Health Centre Akere","lat":6.449543,"lon":3.341842,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":17,"lga":"Ajeromi Ifelodun","name":"Naval Hospital","lat":6.456214,"lon":3.354975,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":18,"lga":"Ajeromi Ifelodun","name":"Primary Health Centre Ajegunle","lat":6.456276,"lon":3.345381,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":19,"lga":"Ajeromi Ifelodun","name":"Primary Health Centre Amukoko","lat":6.466105,"lon":3.342793,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":20,"lga":"Ajeromi Ifelodun","name":"Primary Health Centre Ibafon","lat":6.443378,"lon":3.330576,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":21,"lga":"Ajeromi Ifelodun","name":"Primary Health Centre Layeni","lat":6.460268,"lon":3.325907,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":22,"lga":"Ajeromi Ifelodun","name":"Primary Health Centre Oridilu","lat":6.464415,"lon":3.351569,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":23,"lga":"Ajeromi Ifelodun","name":"Primary Health Centre Tolu","lat":6.444931,"lon":3.346329,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":24,"lga":"Alimosho","name":"General Hospital Alimosho","lat":6.561345,"lon":3.25132,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":25,"lga":"Alimosho","name":"Ishuti Health Post","lat":6.552062,"lon":3.207978,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":26,"lga":"Alimosho","name":"Ogbomosotedo Health Post","lat":6.57507,"lon":3.25804,"status":"ok","note":"auto found"},{"sn":27,"lga":"Alimosho","name":"Primary Health Centre Abaranje","lat":6.5294,"lon":3.2419,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":28,"lga":"Alimosho","name":"Primary Health Centre Aboru","lat":6.624545,"lon":3.282097,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":29,"lga":"Alimosho","name":"Primary Health Centre Agbado","lat":6.677801,"lon":3.259983,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":30,"lga":"Alimosho","name":"Primary Health Centre Agbelekale","lat":6.638108,"lon":3.284097,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":31,"lga":"Alimosho","name":"Primary Health Centre Agodo","lat":6.53205,"lon":3.2794,"status":"verify","note":"Registry puts Agodo PHC here; Google puts it 1.6km away (6.53972,3.29232)"},{"sn":32,"lga":"Alimosho","name":"Primary Health Centre Akinogun","lat":6.609472,"lon":3.284577,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":33,"lga":"Alimosho","name":"Primary Health Centre Akinyele","lat":6.610678,"lon":3.265062,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":34,"lga":"Alimosho","name":"Primary Health Centre Akowonjo","lat":6.600396,"lon":3.300375,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":35,"lga":"Alimosho","name":"Primary Health Centre Amikanle","lat":6.650459,"lon":3.244637,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":36,"lga":"Alimosho","name":"Primary Health Centre Asiwaju Bola Ahmed Tinubu","lat":6.63475,"lon":3.28031,"status":"ok","note":"auto found"},{"sn":37,"lga":"Alimosho","name":"Primary Health Centre Ayobo","lat":6.6064,"lon":3.23484,"status":"ok","note":"auto found"},{"sn":38,"lga":"Alimosho","name":"Primary Health Centre Bada","lat":6.59052,"lon":3.22827,"status":"ok","note":"auto found"},{"sn":39,"lga":"Alimosho","name":"Primary Health Centre Baruwa","lat":6.500719,"lon":3.33275,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":40,"lga":"Alimosho","name":"Primary Health Centre Cele Apata","lat":6.575328,"lon":3.214523,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":41,"lga":"Alimosho","name":"Primary Health Centre Egan","lat":6.547462,"lon":3.235265,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":42,"lga":"Alimosho","name":"Primary Health Centre Egbe Idimu (Helen Aderonke)","lat":6.552058,"lon":3.281047,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":43,"lga":"Alimosho","name":"Primary Health Centre Ijegun","lat":6.51537,"lon":3.260543,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":44,"lga":"Alimosho","name":"Primary Health Centre Ikola","lat":6.626671,"lon":3.247502,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":45,"lga":"Alimosho","name":"Primary Health Centre Ikotun","lat":6.552455,"lon":3.269309,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":46,"lga":"Alimosho","name":"Primary Health Centre Ipaja","lat":6.60445,"lon":3.25419,"status":"ok","note":"auto found"},{"sn":47,"lga":"Alimosho","name":"Primary Health Centre Ipinlerere","lat":6.60957,"lon":3.301353,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":48,"lga":"Alimosho","name":"Primary Health Centre Isefun","lat":6.57971,"lon":3.207518,"status":"ok","note":"auto found"},{"sn":49,"lga":"Alimosho","name":"Primary Health Centre Isheri Olofin","lat":6.576704,"lon":3.28073,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":50,"lga":"Alimosho","name":"Primary Health Centre Isheri-Oshun","lat":6.513499,"lon":3.279356,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":51,"lga":"Alimosho","name":"Primary Health Centre Kokumo","lat":6.61208,"lon":3.29417,"status":"ok","note":"auto found"},{"sn":52,"lga":"Alimosho","name":"Primary Health Centre Meiran","lat":6.663683,"lon":3.281841,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":53,"lga":"Alimosho","name":"Primary Health Centre Ogundimu","lat":6.623901,"lon":3.291338,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":54,"lga":"Alimosho","name":"Primary Health Centre Oke-Odo","lat":6.639574,"lon":3.29621,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":55,"lga":"Alimosho","name":"Primary Health Centre Oki","lat":6.615393,"lon":3.295965,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":56,"lga":"Alimosho","name":"Primary Health Centre Olota","lat":6.643945,"lon":3.286369,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":57,"lga":"Alimosho","name":"Primary Health Centre Opeki","lat":6.61047,"lon":3.26531,"status":"ok","note":"auto found"},{"sn":58,"lga":"Alimosho","name":"Primary Health Centre Orisunbare","lat":6.57007,"lon":3.302892,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":59,"lga":"Alimosho","name":"Primary Health Centre Rauf Aregbesola","lat":6.594733,"lon":3.282675,"status":"ok","note":"auto found"},{"sn":60,"lga":"Alimosho","name":"Primary Health Centre Surulere","lat":6.647287,"lon":3.260091,"status":"ok","note":"auto found"},{"sn":61,"lga":"Amuwo Odofin","name":"Health Post Irede","lat":6.441284,"lon":3.265076,"status":"ok","note":"auto found"},{"sn":62,"lga":"Amuwo Odofin","name":"Health Post Tomaro","lat":null,"lon":null,"status":"missing","note":""},{"sn":63,"lga":"Amuwo Odofin","name":"Maternal And Child Health Centre Amuwo","lat":6.46176,"lon":3.3017,"status":"ok","note":"auto found"},{"sn":64,"lga":"Amuwo Odofin","name":"Nigerian Navy Reference Hospital Ojo","lat":6.45166,"lon":3.28236,"status":"ok","note":"auto found"},{"sn":65,"lga":"Amuwo Odofin","name":"Primary Health Centre Agboju","lat":6.459133,"lon":3.291302,"status":"ok","note":"auto found"},{"sn":66,"lga":"Amuwo Odofin","name":"Primary Health Centre Bola Ahmed Tinubu","lat":6.46248,"lon":3.25864,"status":"ok","note":"auto found"},{"sn":67,"lga":"Amuwo Odofin","name":"Primary Health Centre Festac","lat":6.469454,"lon":3.28377,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":68,"lga":"Amuwo Odofin","name":"Primary Health Centre Ibeshe Amuwo Odofin","lat":6.41364,"lon":3.25228,"status":"verify","note":"Google Maps: Ibeshe PHC, Amuwo Odofin (same pin as a registry clinic - check)"},{"sn":69,"lga":"Amuwo Odofin","name":"Primary Health Centre Igbologun","lat":6.41369,"lon":3.2523,"status":"ok","note":"auto found"},{"sn":70,"lga":"Amuwo Odofin","name":"Primary Health Centre Ijegun","lat":6.44124,"lon":3.26477,"status":"ok","note":"auto found"},{"sn":71,"lga":"Amuwo Odofin","name":"Primary Health Centre Kirikiri","lat":6.44325,"lon":3.30521,"status":"ok","note":"auto found"},{"sn":72,"lga":"Amuwo Odofin","name":"Primary Health Centre Mile 2","lat":6.46592,"lon":3.31742,"status":"ok","note":"auto found"},{"sn":73,"lga":"Amuwo Odofin","name":"Primary Health Centre Sagbokoji","lat":6.43189,"lon":3.37591,"status":"verify","note":"Registry (GRID3/NHFR): Sagbokoji PHC (registry lists it under Apapa, not Amuwo Odofin)"},{"sn":74,"lga":"Amuwo Odofin","name":"Primary Health Centre Satellite","lat":6.44973,"lon":3.26466,"status":"ok","note":"auto found"},{"sn":75,"lga":"Apapa","name":"General Hospital Apapa","lat":6.44233,"lon":3.36843,"status":"ok","note":"auto found"},{"sn":76,"lga":"Apapa","name":"Primary Health Centre Ijora","lat":6.467835,"lon":3.36788,"status":"ok","note":"auto found"},{"sn":77,"lga":"Apapa","name":"Primary Health Centre Marine Beach","lat":6.457092,"lon":3.363281,"status":"ok","note":"auto found"},{"sn":78,"lga":"Apapa","name":"Primary Health Centre Nanti","lat":6.426697,"lon":3.346428,"status":"ok","note":"auto found"},{"sn":79,"lga":"Apapa","name":"Primary Health Centre Ojora Olugbode","lat":6.46785,"lon":3.3597,"status":"ok","note":"auto found"},{"sn":80,"lga":"Apapa","name":"Primary Health Centre Olojowon","lat":6.470233,"lon":3.352188,"status":"ok","note":"auto found"},{"sn":81,"lga":"Apapa","name":"Primary Health Centre Oluwole","lat":6.451111,"lon":3.352478,"status":"ok","note":"auto found"},{"sn":82,"lga":"Apapa","name":"Primary Health Centre Sari Iganmu","lat":6.476317,"lon":3.341793,"status":"ok","note":"auto found"},{"sn":83,"lga":"Apapa","name":"Primary Health Centre Zion","lat":6.47729,"lon":3.35211,"status":"ok","note":"auto found"},{"sn":84,"lga":"Badagry","name":"General Hospital Badagry","lat":6.414361,"lon":2.897278,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":85,"lga":"Badagry","name":"Health Post Isamole","lat":6.496092,"lon":2.999212,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":86,"lga":"Badagry","name":"Primary Health Centre Ajara","lat":6.434645,"lon":2.890563,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":87,"lga":"Badagry","name":"Primary Health Centre Ajido","lat":6.415919,"lon":3.012087,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":88,"lga":"Badagry","name":"Primary Health Centre Apa Badagry","lat":6.431735,"lon":2.82347,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":89,"lga":"Badagry","name":"Primary Health Centre Araromi","lat":null,"lon":null,"status":"missing","note":"Google lists 'Araromi-Ale PHC, Badagry Expressway' but its map pin is wrong (points to Osun). Needs field pin"},{"sn":90,"lga":"Badagry","name":"Primary Health Centre Farasime","lat":6.425665,"lon":2.714492,"status":"ok","note":"auto found"},{"sn":91,"lga":"Badagry","name":"Primary Health Centre Gberefu","lat":6.397262,"lon":2.873342,"status":"ok","note":"auto found"},{"sn":92,"lga":"Badagry","name":"Primary Health Centre Ibereko","lat":6.441828,"lon":2.919407,"status":"ok","note":"auto found"},{"sn":93,"lga":"Badagry","name":"Primary Health Centre Ibereko Barracks","lat":6.43949,"lon":2.91688,"status":"verify","note":"Registry (GRID3/NHFR): 243 Battalion Medical Station, Ibereko Barracks (not the civilian Ibereko PHC)"},{"sn":94,"lga":"Badagry","name":"Primary Health Centre Igbogbele","lat":6.422805,"lon":2.779422,"status":"ok","note":"auto found"},{"sn":95,"lga":"Badagry","name":"Primary Health Centre Ilado","lat":6.43726,"lon":2.966197,"status":"ok","note":"auto found"},{"sn":96,"lga":"Badagry","name":"Primary Health Centre Ilogbo","lat":6.500953,"lon":3.027703,"status":"ok","note":"auto found"},{"sn":97,"lga":"Badagry","name":"Primary Health Centre Marina","lat":6.413383,"lon":2.885762,"status":"ok","note":"auto found"},{"sn":98,"lga":"Badagry","name":"Primary Health Centre Morogbo","lat":6.49628,"lon":3.09238,"status":"ok","note":"auto found"},{"sn":99,"lga":"Badagry","name":"Primary Health Centre Mowo","lat":6.460762,"lon":2.960133,"status":"ok","note":"auto found"},{"sn":100,"lga":"Badagry","name":"Primary Health Centre Obele-Esepe","lat":6.46328,"lon":3.03169,"status":"ok","note":"auto found"},{"sn":101,"lga":"Badagry","name":"Primary Health Centre Pota","lat":6.487948,"lon":2.958803,"status":"ok","note":"auto found"},{"sn":102,"lga":"Badagry","name":"Primary Health Centre Sakpo","lat":6.39423,"lon":2.838163,"status":"ok","note":"auto found"},{"sn":103,"lga":"Badagry","name":"Primary Health Centre Seme","lat":6.379192,"lon":2.711186,"status":"ok","note":"auto found"},{"sn":104,"lga":"Badagry","name":"Primary Health Centre Wilbros","lat":6.41524,"lon":2.99027,"status":"ok","note":"auto found"},{"sn":105,"lga":"Epe","name":"General Hospital Agbowa","lat":6.63726,"lon":3.7147,"status":"ok","note":"auto found"},{"sn":106,"lga":"Epe","name":"General Hospital Epe","lat":6.58649,"lon":3.9707,"status":"ok","note":"auto found"},{"sn":107,"lga":"Epe","name":"Primary Health Centre Afuye","lat":6.582652,"lon":3.98916,"status":"ok","note":"auto found"},{"sn":108,"lga":"Epe","name":"Primary Health Centre Agbowa","lat":6.640145,"lon":3.712118,"status":"ok","note":"auto found"},{"sn":109,"lga":"Epe","name":"Primary Health Centre Ejirin","lat":6.61292,"lon":3.89761,"status":"ok","note":"auto found"},{"sn":110,"lga":"Epe","name":"Primary Health Centre Epe","lat":6.58981,"lon":3.97989,"status":"ok","note":"auto found"},{"sn":111,"lga":"Epe","name":"Primary Health Centre Eredo","lat":6.647985,"lon":3.98903,"status":"ok","note":"auto found"},{"sn":112,"lga":"Epe","name":"Primary Health Centre Erepoto","lat":6.57727,"lon":3.96774,"status":"ok","note":"auto found"},{"sn":113,"lga":"Epe","name":"Primary Health Centre Ibonwon","lat":6.67245,"lon":3.99648,"status":"ok","note":"auto found"},{"sn":114,"lga":"Epe","name":"Primary Health Centre Ikosi -Ejirin Cotta","lat":6.67346,"lon":3.73881,"status":"verify","note":"Registry (GRID3/NHFR): Ota Ikosi PHC, Epe - best guess for 'Ikosi-Ejirin Cotta'"},{"sn":115,"lga":"Epe","name":"Primary Health Centre Ilara","lat":6.662028,"lon":4.000471,"status":"ok","note":"auto found"},{"sn":116,"lga":"Epe","name":"Primary Health Centre Itoikin","lat":6.65676,"lon":3.79452,"status":"ok","note":"auto found"},{"sn":117,"lga":"Epe","name":"Primary Health Centre Mojoda","lat":6.678325,"lon":3.984743,"status":"ok","note":"auto found"},{"sn":118,"lga":"Epe","name":"Primary Health Centre Odomola","lat":6.608186,"lon":3.989092,"status":"ok","note":"auto found"},{"sn":119,"lga":"Epe","name":"Primary Health Centre Papa","lat":6.584847,"lon":3.96316,"status":"ok","note":"auto found"},{"sn":120,"lga":"Epe","name":"Primary Health Centre Poka","lat":6.61959,"lon":3.98723,"status":"ok","note":"auto found"},{"sn":121,"lga":"Epe","name":"Primary Health Centre Sagidan","lat":6.584395,"lon":3.977455,"status":"ok","note":"auto found"},{"sn":122,"lga":"Eti Osa","name":"Maternal and Child health Centre Eti-Osa","lat":6.46308,"lon":3.58518,"status":"ok","note":"auto found"},{"sn":123,"lga":"Eti Osa","name":"Military Hospital Lagos","lat":6.443612,"lon":3.407714,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":124,"lga":"Eti Osa","name":"Navy Hospital","lat":6.42361,"lon":3.40939,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":125,"lga":"Eti Osa","name":"Police Hospital Falomo","lat":6.442826,"lon":3.429025,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":126,"lga":"Eti Osa","name":"Primary Health Centre Ado Langbasa","lat":6.50112,"lon":3.58125,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":127,"lga":"Eti Osa","name":"Primary Health Centre Ajah","lat":6.468323,"lon":3.563477,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":128,"lga":"Eti Osa","name":"Primary Health Centre Ajiran","lat":6.453674,"lon":3.520325,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":129,"lga":"Eti Osa","name":"Primary Health Centre Badore","lat":6.509163,"lon":3.611462,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":130,"lga":"Eti Osa","name":"Primary Health Centre Gbara Mayegun","lat":6.432922,"lon":3.510681,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":131,"lga":"Eti Osa","name":"Primary Health Centre Igbo-Efon","lat":6.436848,"lon":3.52254,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":132,"lga":"Eti Osa","name":"Primary Health Centre Ikate","lat":6.434482,"lon":3.486137,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":133,"lga":"Eti Osa","name":"Primary Health Centre Ikota","lat":6.454457,"lon":3.555848,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":134,"lga":"Eti Osa","name":"Primary Health Centre Ikoyi","lat":6.450928,"lon":3.410706,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":135,"lga":"Eti Osa","name":"Primary Health Centre Ilasan","lat":6.43339,"lon":3.50364,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":136,"lga":"Eti Osa","name":"Primary Health Centre Obalende","lat":6.449718,"lon":3.412312,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":137,"lga":"Eti Osa","name":"Primary Health Centre Ogombo","lat":6.449258,"lon":3.612067,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":138,"lga":"Eti Osa","name":"Primary Health Centre Okunmopo","lat":6.427608,"lon":3.619368,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":139,"lga":"Eti Osa","name":"Primary Health Centre Oniru","lat":6.424665,"lon":3.452663,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":140,"lga":"Eti Osa","name":"Primary Health Centre Oriyanrin","lat":6.433472,"lon":3.440308,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":141,"lga":"Eti Osa","name":"Primary Health Centre Sangotedo","lat":6.472453,"lon":3.632537,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":142,"lga":"Eti Osa","name":"Primary health centre Ifesowapo","lat":6.45534,"lon":3.56672,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":143,"lga":"Ibeju Lekki","name":"General Hospital Ibeju Lekki","lat":6.43963,"lon":3.93401,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":144,"lga":"Ibeju Lekki","name":"Primary Health Centre Apakin","lat":6.40454,"lon":4.131885,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":145,"lga":"Ibeju Lekki","name":"Primary Health Centre Awoyaya (Cbhis)","lat":6.479309,"lon":3.704895,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":146,"lga":"Ibeju Lekki","name":"Primary Health Centre Awoyaya 1","lat":6.468042,"lon":3.705298,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":147,"lga":"Ibeju Lekki","name":"Primary Health Centre Ayeteju","lat":6.47352,"lon":3.809657,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":148,"lga":"Ibeju Lekki","name":"Primary Health Centre Bogije","lat":6.48227,"lon":3.72114,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":149,"lga":"Ibeju Lekki","name":"Primary Health Centre Debojo","lat":6.44149,"lon":3.837287,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":150,"lga":"Ibeju Lekki","name":"Primary Health Centre Folu","lat":6.39367,"lon":4.196256,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":151,"lga":"Ibeju Lekki","name":"Primary Health Centre Ibeju","lat":6.41644,"lon":4.0851,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":152,"lga":"Ibeju Lekki","name":"Primary Health Centre Iberekodo","lat":6.44021,"lon":3.85964,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":153,"lga":"Ibeju Lekki","name":"Primary Health Centre Idasho","lat":6.429242,"lon":3.986561,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":154,"lga":"Ibeju Lekki","name":"Primary Health Centre Idotun","lat":6.424543,"lon":4.022795,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":155,"lga":"Ibeju Lekki","name":"Primary Health Centre Lakowe","lat":6.47453,"lon":3.73861,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":156,"lga":"Ibeju Lekki","name":"Primary Health Centre Lekki","lat":6.41363,"lon":4.09464,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":157,"lga":"Ibeju Lekki","name":"Primary Health Centre Magbon-Segun","lat":6.428935,"lon":3.997037,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":158,"lga":"Ibeju Lekki","name":"Primary Health Centre Okun-Ise","lat":6.391355,"lon":4.208233,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":159,"lga":"Ibeju Lekki","name":"Primary Health Centre Okunraye","lat":6.42023,"lon":4.05505,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":160,"lga":"Ibeju Lekki","name":"Primary Health Centre Orimedu","lat":6.440638,"lon":3.901619,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":161,"lga":"Ibeju Lekki","name":"Primary Health Centre Otunla","lat":6.47287,"lon":3.75029,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":162,"lga":"Ibeju Lekki","name":"Primary Health Centre Solu Alade","lat":6.439402,"lon":3.789728,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":163,"lga":"Ifako Ijaye","name":"General Hospital Ifako Ijaiye","lat":6.643537,"lon":3.32584,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":164,"lga":"Ifako Ijaye","name":"Primary Health Centre Abule Tuntun","lat":6.68498,"lon":3.2776,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":165,"lga":"Ifako Ijaye","name":"Primary Health Centre Adesola","lat":6.670642,"lon":3.310094,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":166,"lga":"Ifako Ijaye","name":"Primary Health Centre Agbado (Primary Health Centre Kola)","lat":6.67516,"lon":3.27352,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":167,"lga":"Ifako Ijaye","name":"Primary Health Centre Aina Ajobo","lat":6.638593,"lon":3.340252,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":168,"lga":"Ifako Ijaye","name":"Primary Health Centre Ifako","lat":6.6453,"lon":3.3256,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":169,"lga":"Ifako Ijaye","name":"Primary Health Centre Iju","lat":6.661144,"lon":3.322935,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":170,"lga":"Ifako Ijaye","name":"Primary Health Centre Ilo Ajegunle","lat":6.694702,"lon":3.262878,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":171,"lga":"Ifako Ijaye","name":"Primary Health Centre Isokan","lat":6.674445,"lon":3.299305,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":172,"lga":"Ifako Ijaye","name":"Primary Health Centre Obawole","lat":6.656453,"lon":3.333165,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":173,"lga":"Ifako Ijaye","name":"Primary Health Centre Ogundinmu","lat":6.66791,"lon":3.33771,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":174,"lga":"Ifako Ijaye","name":"Primary Health Centre Ojokoro (Primary Health Centre Iwa)","lat":6.66023,"lon":3.296,"status":"verify","note":"Registry (GRID3/NHFR): Ojokoro PHC - couldn't confirm the 'Iwa' part of the name"},{"sn":175,"lga":"Ikeja","name":"9 Bmc Ikeja","lat":6.56737,"lon":3.35849,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":176,"lga":"Ikeja","name":"Folarin Coker Staff Clinic","lat":6.61563,"lon":3.36186,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":177,"lga":"Ikeja","name":"Health Post Alade Market","lat":6.60672,"lon":3.34995,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":178,"lga":"Ikeja","name":"Lagos State University Teaching Hospital Ikeja","lat":6.589661,"lon":3.342198,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":179,"lga":"Ikeja","name":"Primary Health Center Agidingbi","lat":6.6186,"lon":3.3542,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":180,"lga":"Ikeja","name":"Primary Health Centre Abule Onigbagbo","lat":6.585903,"lon":3.357935,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":181,"lga":"Ikeja","name":"Primary Health Centre Adeniyi Jones Mdg","lat":6.61275,"lon":3.34864,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":183,"lga":"Ikeja","name":"Primary Health Centre Aguda","lat":6.636292,"lon":3.348083,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":184,"lga":"Ikeja","name":"Primary Health Centre Akiode","lat":6.639777,"lon":3.355752,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":185,"lga":"Ikeja","name":"Primary Health Centre Alausa","lat":6.6107,"lon":3.35675,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":186,"lga":"Ikeja","name":"Primary Health Centre Beko Ransome-Kuti","lat":6.587657,"lon":3.346208,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":187,"lga":"Ikeja","name":"Primary Health Centre Ikeja","lat":6.59715,"lon":3.33843,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":188,"lga":"Ikeja","name":"Primary Health Centre Ogba Oluwole","lat":6.63057,"lon":3.3423,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":189,"lga":"Ikeja","name":"Primary Health Centre Ojodu","lat":6.64746,"lon":3.358747,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":190,"lga":"Ikeja","name":"Primary Health Centre Oke Ira Mdg","lat":6.64816,"lon":3.35214,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":191,"lga":"Ikeja","name":"Primary Health Centre Oke-Ira Powerline","lat":6.65359,"lon":3.34828,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":192,"lga":"Ikeja","name":"Primary Health Centre Olusosun","lat":6.59012,"lon":3.37487,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":193,"lga":"Ikeja","name":"Primary Health Centre Onigbongbo","lat":6.570809,"lon":3.364796,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":194,"lga":"Ikeja","name":"Primary Health Centre Onilekere","lat":6.60498,"lon":3.317782,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":195,"lga":"Ikeja","name":"Primary Health Centre Onipetesi","lat":6.60746,"lon":3.325858,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":196,"lga":"Ikeja","name":"Primary Health Centre Opebi","lat":6.589447,"lon":3.362393,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":197,"lga":"Ikeja","name":"Primary Health Centre Oregun","lat":6.600967,"lon":3.364128,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":198,"lga":"Ikeja","name":"Primary Health Centre Wasimi","lat":6.578665,"lon":3.368542,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":199,"lga":"Ikorodu","name":"Abala Peadiatics","lat":6.63116,"lon":3.50892,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":200,"lga":"Ikorodu","name":"Eocc","lat":6.6146,"lon":3.5042,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":201,"lga":"Ikorodu","name":"General Hospital Ijede","lat":6.564733,"lon":3.596555,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":202,"lga":"Ikorodu","name":"General Hospital Ikorodu","lat":6.608542,"lon":3.499795,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":203,"lga":"Ikorodu","name":"General Hospital Imota","lat":6.660017,"lon":3.669608,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":204,"lga":"Ikorodu","name":"Health Centre Ijede","lat":6.564722,"lon":3.590148,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":205,"lga":"Ikorodu","name":"Health Post Parafa","lat":6.643817,"lon":3.556205,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":206,"lga":"Ikorodu","name":"Primary Health Centre (Imota) Orio Kuta","lat":6.68076,"lon":3.67161,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":207,"lga":"Ikorodu","name":"Primary Health Centre Abule-Eko","lat":6.5833,"lon":3.59401,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":208,"lga":"Ikorodu","name":"Primary Health Centre Agbede","lat":6.678935,"lon":3.482637,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":209,"lga":"Ikorodu","name":"Primary Health Centre Agbele","lat":6.61933,"lon":3.5183,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":210,"lga":"Ikorodu","name":"Primary Health Centre Agura","lat":6.57998,"lon":3.627858,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":211,"lga":"Ikorodu","name":"Primary Health Centre Akan-un","lat":null,"lon":null,"status":"missing","note":"'Akan-un' not found in registry or Google"},{"sn":212,"lga":"Ikorodu","name":"Primary Health Centre Bayeku","lat":6.546615,"lon":3.542918,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":213,"lga":"Ikorodu","name":"Primary Health Centre Erunwen","lat":6.60452,"lon":3.54379,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":214,"lga":"Ikorodu","name":"Primary Health Centre Ewu Elepe","lat":6.614875,"lon":3.566435,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":215,"lga":"Ikorodu","name":"Primary Health Centre Ibeshe","lat":6.55843,"lon":3.47562,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":216,"lga":"Ikorodu","name":"Primary Health Centre Igbalu","lat":6.5874,"lon":3.65227,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":217,"lga":"Ikorodu","name":"Primary Health Centre Igbogbo (Primary Health Centreagbele)","lat":6.59258,"lon":3.52233,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":218,"lga":"Ikorodu","name":"Primary Health Centre Igboolomu","lat":6.67671,"lon":3.46217,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":219,"lga":"Ikorodu","name":"Primary Health Centre Imota","lat":6.660017,"lon":3.669608,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":220,"lga":"Ikorodu","name":"Primary Health Centre Ipakodo","lat":6.601972,"lon":3.49231,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":221,"lga":"Ikorodu","name":"Primary Health Centre Isiu","lat":6.663403,"lon":3.612412,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":222,"lga":"Ikorodu","name":"Primary Health Centre Ita-Elewa","lat":6.612563,"lon":3.502647,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":223,"lga":"Ikorodu","name":"Primary Health Centre Lasunwo","lat":6.64855,"lon":3.51396,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":224,"lga":"Ikorodu","name":"Primary Health Centre Losi Oba","lat":6.680123,"lon":3.515702,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":225,"lga":"Ikorodu","name":"Primary Health Centre Majidun","lat":6.617768,"lon":3.473693,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":226,"lga":"Ikorodu","name":"Primary Health Centre Mojoda","lat":6.54901,"lon":3.47887,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":227,"lga":"Ikorodu","name":"Primary Health Centre Odonla","lat":6.67143,"lon":3.53469,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":228,"lga":"Ikorodu","name":"Primary Health Centre Offin","lat":6.540387,"lon":3.500135,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":229,"lga":"Ikorodu","name":"Primary Health Centre Oke Eletu","lat":6.600343,"lon":3.588065,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":230,"lga":"Ikorodu","name":"Primary Health Centre Oke-Lisa","lat":6.60962,"lon":3.67089,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":231,"lga":"Ikorodu","name":"Primary Health Centre Olorunda","lat":6.66867,"lon":3.585868,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":232,"lga":"Ikorodu","name":"Primary Health Centre Omolaiye","lat":6.66835,"lon":3.47302,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":233,"lga":"Ikorodu","name":"Primary Health Centre Ori Okuta","lat":6.64447,"lon":3.483704,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":234,"lga":"Kosofe","name":"General Hospital Gbagada","lat":6.552366,"lon":3.386774,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":235,"lga":"Kosofe","name":"Primary Health Centre Agboyi","lat":6.578381,"lon":3.409668,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":236,"lga":"Kosofe","name":"Primary Health Centre Ajegunle","lat":6.60722,"lon":3.43095,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":237,"lga":"Kosofe","name":"Primary Health Centre Alapere","lat":6.581307,"lon":3.398643,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":238,"lga":"Kosofe","name":"Primary Health Centre Idera","lat":6.612158,"lon":3.416589,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":239,"lga":"Kosofe","name":"Primary Health Centre Ikosi","lat":6.599947,"lon":3.38327,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":240,"lga":"Kosofe","name":"Primary Health Centre Isheri","lat":6.63706,"lon":3.38122,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":241,"lga":"Kosofe","name":"Primary Health Centre Ketu (Mascara)","lat":6.59486,"lon":3.38956,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":242,"lga":"Kosofe","name":"Primary Health Centre Maidan","lat":6.609207,"lon":3.398513,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":243,"lga":"Kosofe","name":"Primary Health Centre Mende","lat":6.570277,"lon":3.372548,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":244,"lga":"Kosofe","name":"Primary Health Centre Ogudu Kosofe","lat":6.573888,"lon":3.394567,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":245,"lga":"Kosofe","name":"Primary Health Centre Olowora","lat":6.6344,"lon":3.3775,"status":"verify","note":"Same spot as PHC Isheri - may be the same facility listed twice; confirm"},{"sn":246,"lga":"Kosofe","name":"Primary Health Centre Oworo","lat":6.54269,"lon":3.403102,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":247,"lga":"Lagos Island","name":"Anikantamo Primary Health Centre","lat":6.457886,"lon":3.394287,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":248,"lga":"Lagos Island","name":"Carena Health Post","lat":null,"lon":null,"status":"missing","note":"'Carena Health Post' not found in registry or Google"},{"sn":249,"lga":"Lagos Island","name":"General Hospital Lagos","lat":6.447529,"lon":3.396532,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":250,"lga":"Lagos Island","name":"Health Centre Onikan Lagos","lat":6.444652,"lon":3.405462,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":251,"lga":"Lagos Island","name":"Health Post Itafaji","lat":6.45569,"lon":3.39069,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":252,"lga":"Lagos Island","name":"Health Post Tajudeen Olusi","lat":6.46261,"lon":3.3849,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":253,"lga":"Lagos Island","name":"Lagos Island Maternity Hospital","lat":6.448662,"lon":3.397378,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":254,"lga":"Lagos Island","name":"Massey Street Children Hospital","lat":6.455071,"lon":3.392241,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":255,"lga":"Lagos Island","name":"Onala Health Post","lat":6.457397,"lon":3.392335,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":256,"lga":"Lagos Island","name":"Primary Health Centre Agarawu (Oko Awo)","lat":6.45766,"lon":3.38924,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":257,"lga":"Lagos Island","name":"Primary Health Centre Araromi","lat":6.447528,"lon":3.406598,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":258,"lga":"Lagos Island","name":"Primary Health Centre Iga Iduganrun","lat":6.46558,"lon":3.38963,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":259,"lga":"Lagos Island","name":"Primary Health Centre Oba Adeyinka Oyekan","lat":6.463258,"lon":3.392398,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":260,"lga":"Lagos Island","name":"Primary Health Centre Olowogbowo","lat":6.459315,"lon":3.382036,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":261,"lga":"Lagos Island","name":"Primary Health Centre Phase 3","lat":6.456602,"lon":3.398443,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":262,"lga":"Lagos Island","name":"Primary Health Centre Sura","lat":6.454893,"lon":3.403251,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":263,"lga":"Lagos Mainland","name":"Federal Medical Centre Ebute-Metta","lat":6.48425,"lon":3.38033,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":264,"lga":"Lagos Mainland","name":"Health Centre Ebute Meta","lat":6.48807,"lon":3.38492,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":265,"lga":"Lagos Mainland","name":"Health Centre Harvey Road","lat":6.510333,"lon":3.374758,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":266,"lga":"Lagos Mainland","name":"Nigerian Institute Of Medical Research (NIMR)","lat":6.5165,"lon":3.3747,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":267,"lga":"Lagos Mainland","name":"Primary Health Centre Abule Nla","lat":6.484405,"lon":3.371969,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":268,"lga":"Lagos Mainland","name":"Primary Health Centre Aiyetoro","lat":6.492733,"lon":3.38708,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":269,"lga":"Lagos Mainland","name":"Primary Health Centre Alhaji Kola Osho","lat":6.520872,"lon":3.381648,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":270,"lga":"Lagos Mainland","name":"Primary Health Centre Alli Dawodu","lat":6.52416,"lon":3.37661,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":271,"lga":"Lagos Mainland","name":"Primary Health Centre Igbobi Sabe (Oba Salami)","lat":6.52239,"lon":3.36855,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":272,"lga":"Lagos Mainland","name":"Primary Health Centre Iwaya","lat":6.506825,"lon":3.391438,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":273,"lga":"Lagos Mainland","name":"Primary Health Centre Ondo-West","lat":6.4837,"lon":3.38037,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":274,"lga":"Lagos Mainland","name":"Primary Health Centre Otto","lat":6.475287,"lon":3.379233,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":275,"lga":"Lagos Mainland","name":"Primary Health Centre Otumara","lat":6.47768,"lon":3.37458,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":276,"lga":"Lagos Mainland","name":"Primary Health Centre Simpson","lat":6.48844,"lon":3.38171,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":277,"lga":"Mushin","name":"General Hospital Mushin","lat":6.531525,"lon":3.346252,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":278,"lga":"Mushin","name":"Idi- Araba Health Post","lat":6.51759,"lon":3.34478,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":279,"lga":"Mushin","name":"Lagos University Teaching Hospital (Luth) 2","lat":6.51758,"lon":3.35392,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":280,"lga":"Mushin","name":"Lagos University Teaching Hospital (Luth) Clinic","lat":6.51758,"lon":3.35392,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":281,"lga":"Mushin","name":"Primary Health Centre Ajeabo","lat":6.52005,"lon":3.33762,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":282,"lga":"Mushin","name":"Primary Health Centre Ajisegiri","lat":6.57167,"lon":3.34478,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":283,"lga":"Mushin","name":"Primary Health Centre Alves","lat":6.51455,"lon":3.34477,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":284,"lga":"Mushin","name":"Primary Health Centre Anikulapo","lat":6.516724,"lon":3.36731,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":285,"lga":"Mushin","name":"Primary Health Centre Ayantuga","lat":6.533118,"lon":3.355202,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":286,"lga":"Mushin","name":"Primary Health Centre Coker","lat":6.54858,"lon":3.36169,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":287,"lga":"Mushin","name":"Primary Health Centre Igbo Owu","lat":6.53017,"lon":3.34082,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":288,"lga":"Mushin","name":"Primary Health Centre Isolo","lat":6.5272,"lon":3.34885,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":289,"lga":"Mushin","name":"Primary Health Centre Itire Ijesha","lat":6.509923,"lon":3.33723,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":290,"lga":"Mushin","name":"Primary Health Centre Kajola","lat":6.52712,"lon":3.36584,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":291,"lga":"Mushin","name":"Primary Health Centre Palm Avenue","lat":6.536528,"lon":3.349811,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":292,"lga":"Ojo","name":"Health Centre Shibiri","lat":6.461792,"lon":3.144273,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":293,"lga":"Ojo","name":"Ira Health Post","lat":6.453494,"lon":3.211534,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":294,"lga":"Ojo","name":"Nnsb Okoko","lat":6.47361,"lon":3.18074,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":295,"lga":"Ojo","name":"Primary Health Centre Afromedia","lat":6.474915,"lon":3.179504,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":296,"lga":"Ojo","name":"Primary Health Centre Era Mini","lat":6.47694,"lon":3.12414,"status":"verify","note":"Registry (GRID3/NHFR): Era PHC - couldn't confirm the 'Mini' part"},{"sn":297,"lga":"Ojo","name":"Primary Health Centre Iba","lat":6.507043,"lon":3.19856,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":298,"lga":"Ojo","name":"Primary Health Centre Igbede","lat":6.45167,"lon":3.16247,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":299,"lga":"Ojo","name":"Primary Health Centre Ijagemo","lat":6.45974,"lon":3.2255,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":300,"lga":"Ojo","name":"Primary Health Centre Ijanikin","lat":6.49735,"lon":3.118578,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":301,"lga":"Ojo","name":"Primary Health Centre Ijedodo","lat":6.49845,"lon":3.24747,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":302,"lga":"Ojo","name":"Primary Health Centre Imude","lat":6.46666,"lon":3.115,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":303,"lga":"Ojo","name":"Primary Health Centre Irewe","lat":6.418275,"lon":3.14487,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":304,"lga":"Ojo","name":"Primary Health Centre Isagira","lat":6.44312,"lon":3.12708,"status":"verify","note":"Registry (GRID3/NHFR): Ishagira PHC, Egan-Ojo (there's also an 'Ishagiri' PHC - check which)"},{"sn":305,"lga":"Ojo","name":"Primary Health Centre Ishashi","lat":6.50232,"lon":3.17163,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":306,"lga":"Ojo","name":"Primary Health Centre Kembiri","lat":6.46715,"lon":3.18714,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":307,"lga":"Ojo","name":"Primary Health Centre Oba Adeshina","lat":6.50747,"lon":3.20035,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":308,"lga":"Ojo","name":"Primary Health Centre Ojo","lat":6.45888,"lon":3.20349,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":309,"lga":"Ojo","name":"Primary Health Centre Oke-Ijeun","lat":6.470897,"lon":3.1499,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":310,"lga":"Ojo","name":"Primary Health Centre Okokomaiko","lat":6.4642,"lon":3.1822,"status":"verify","note":"Google Maps: Okokomaiko PHC (Google has two pins for it - check)"},{"sn":311,"lga":"Ojo","name":"Primary Health Centre Tedi","lat":6.446402,"lon":3.227555,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":312,"lga":"Oshodi Isolo","name":"445 Naf Hospital Ikeja","lat":6.58246,"lon":3.34067,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":313,"lga":"Oshodi Isolo","name":"Dauda Ilo","lat":6.556113,"lon":3.307407,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":314,"lga":"Oshodi Isolo","name":"General Hospital Isolo","lat":6.527288,"lon":3.31892,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":315,"lga":"Oshodi Isolo","name":"Primary Health Centre Ailegun","lat":6.528931,"lon":3.300476,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":316,"lga":"Oshodi Isolo","name":"Primary Health Centre Ajao","lat":6.551457,"lon":3.324388,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":317,"lga":"Oshodi Isolo","name":"Primary Health Centre Apena","lat":6.50978,"lon":3.31494,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":318,"lga":"Oshodi Isolo","name":"Primary Health Centre Ayo Ni","lat":6.556157,"lon":3.330873,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":319,"lga":"Oshodi Isolo","name":"Primary Health Centre Ejigbo","lat":6.55215,"lon":3.30507,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":320,"lga":"Oshodi Isolo","name":"Primary Health Centre Ewetuntun","lat":6.56682,"lon":3.33757,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":321,"lga":"Oshodi Isolo","name":"Primary Health Centre Ilasa","lat":6.517353,"lon":3.328734,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":322,"lga":"Oshodi Isolo","name":"Primary Health Centre Ishaga","lat":6.524723,"lon":3.328203,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":323,"lga":"Oshodi Isolo","name":"Primary Health Centre Isolo","lat":6.52872,"lon":3.3206,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":324,"lga":"Oshodi Isolo","name":"Primary Health Centre Iyana Ejigbo","lat":6.540343,"lon":3.299907,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":325,"lga":"Oshodi Isolo","name":"Primary Health Centre Jakande","lat":6.523723,"lon":3.301193,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":326,"lga":"Oshodi Isolo","name":"Primary Health Centre Lsdpc","lat":6.531365,"lon":3.331113,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":327,"lga":"Oshodi Isolo","name":"Primary Health Centre Mafoluku","lat":6.560681,"lon":3.331505,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":328,"lga":"Oshodi Isolo","name":"Primary Health Centre Ogundele","lat":null,"lon":null,"status":"missing","note":"'Ogundele' not found in registry or Google"},{"sn":329,"lga":"Oshodi Isolo","name":"Primary Health Centre Okota","lat":6.509178,"lon":3.296505,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":330,"lga":"Oshodi Isolo","name":"Primary Health Centre Ona Iwamimo","lat":6.54449,"lon":3.28851,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":331,"lga":"Oshodi Isolo","name":"Primary Health Centre Oshodi","lat":6.55713,"lon":3.34869,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":332,"lga":"Oshodi Isolo","name":"Primary Health Centre Shogunle","lat":6.57864,"lon":3.34156,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":333,"lga":"Shomolu","name":"General Hospital Somolu","lat":6.536486,"lon":3.371952,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":334,"lga":"Shomolu","name":"Primary Health Centre Akinwumi Ambode","lat":6.53507,"lon":3.37656,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":335,"lga":"Shomolu","name":"Primary Health Centre Akoka","lat":6.527273,"lon":3.384838,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":336,"lga":"Shomolu","name":"Primary Health Centre Ashogbon","lat":6.534998,"lon":3.396032,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":337,"lga":"Shomolu","name":"Primary Health Centre Bajulaiye","lat":6.53247,"lon":3.38171,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":338,"lga":"Shomolu","name":"Primary Health Centre Cms","lat":6.53591,"lon":3.3899,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":339,"lga":"Shomolu","name":"Primary Health Centre Eva Adelaja","lat":6.54316,"lon":3.39264,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":340,"lga":"Shomolu","name":"Primary Health Centre Ibijoke Sanwoolu","lat":6.52719,"lon":3.377,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":341,"lga":"Shomolu","name":"Primary Health Centre Mafowoku","lat":6.54307,"lon":3.38401,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":342,"lga":"Shomolu","name":"Primary Health Centre Ohekenu","lat":6.526572,"lon":3.368357,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":343,"lga":"Shomolu","name":"Primary Health Centre Oloja (Late Hon Adewale Awokoya PHC))","lat":6.53565,"lon":3.38519,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":344,"lga":"Shomolu","name":"Primary Health Centre Wright","lat":6.539917,"lon":3.371704,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":345,"lga":"Surulere","name":"General Hospital Randle","lat":6.508174,"lon":3.357477,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":346,"lga":"Surulere","name":"Primary Health Centre Airways","lat":6.488755,"lon":3.330365,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":347,"lga":"Surulere","name":"Primary Health Centre Akerele","lat":6.50561,"lon":3.354748,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":348,"lga":"Surulere","name":"Primary Health Centre Anjorin","lat":6.51065,"lon":3.34633,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":349,"lga":"Surulere","name":"Primary Health Centre Baruwa Ijesha","lat":6.50049,"lon":3.33289,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":350,"lga":"Surulere","name":"Primary Health Centre Coker Aguda","lat":6.488448,"lon":3.338205,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":351,"lga":"Surulere","name":"Primary Health Centre Ejire","lat":6.502686,"lon":3.33728,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":352,"lga":"Surulere","name":"Primary Health Centre Femi Gbajabiamila","lat":6.501213,"lon":3.365978,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":353,"lga":"Surulere","name":"Primary Health Centre Iponri","lat":6.486483,"lon":3.362423,"status":"ok","note":"Google Maps / OpenStreetMap lookup"},{"sn":354,"lga":"Surulere","name":"Primary Health Centre Orile Coker","lat":6.48025,"lon":3.33687,"status":"verify","note":"Registry (GRID3/NHFR): Orile PHC, Surulere (old match was Coker Aguda, which is its own row)"},{"sn":355,"lga":"Surulere","name":"Rgh Mcc Gbaja","lat":6.5057,"lon":3.3533,"status":"ok","note":"Google Maps / OpenStreetMap lookup"}],"dots":[[6.379,2.711],[6.382,2.749],[6.382,4.308],[6.385,2.768],[6.386,2.74],[6.387,2.715],[6.391,2.716],[6.391,4.208],[6.394,2.838],[6.394,4.196],[6.397,2.873],[6.4,4.27],[6.402,3.389],[6.404,3.029],[6.405,3.259],[6.405,4.132],[6.407,3.381],[6.407,3.394],[6.408,3.074],[6.41,4.27],[6.411,4.254],[6.412,2.923],[6.413,2.886],[6.413,2.893],[6.413,2.937],[6.413,2.976],[6.414,2.898],[6.414,3.252],[6.414,3.274],[6.414,4.095],[6.415,2.882],[6.415,2.99],[6.415,4.096],[6.416,3.012],[6.416,4.085],[6.417,2.862],[6.417,2.881],[6.417,3.029],[6.417,4.087],[6.418,3.145],[6.418,3.2],[6.418,3.329],[6.418,4.215],[6.419,2.883],[6.419,2.886],[6.419,3.363],[6.419,4.075],[6.42,2.708],[6.42,3.143],[6.42,4.055],[6.421,3.245],[6.421,3.333],[6.421,3.493],[6.421,4.055],[6.422,2.772],[6.422,2.888],[6.422,3.274],[6.423,2.779],[6.423,2.851],[6.423,3.106],[6.423,3.419],[6.423,3.423],[6.423,3.527],[6.424,2.848],[6.424,3.242],[6.424,3.409],[6.424,3.424],[6.424,3.493],[6.425,3.242],[6.425,3.254],[6.425,3.441],[6.425,3.453],[6.425,3.558],[6.425,3.56],[6.425,4.023],[6.425,4.12],[6.426,2.714],[6.426,3.234],[6.426,3.437],[6.427,3.346],[6.427,3.445],[6.428,2.894],[6.428,3.218],[6.428,3.275],[6.428,3.44],[6.428,3.468],[6.428,3.566],[6.428,3.619],[6.429,3.413],[6.429,3.987],[6.429,3.997],[6.43,3.105],[6.43,3.437],[6.431,2.885],[6.431,2.888],[6.431,2.892],[6.431,3.427],[6.431,3.447],[6.432,2.823],[6.432,2.889],[6.432,3.254],[6.432,3.376],[6.432,3.412],[6.432,3.472],[6.433,2.894],[6.433,2.924],[6.433,2.963],[6.433,3.431],[6.433,3.44],[6.433,3.443],[6.433,3.504],[6.433,3.511],[6.434,2.901],[6.434,3.439],[6.434,3.48],[6.434,3.486],[6.434,3.522],[6.435,2.891],[6.435,2.898],[6.435,2.981],[6.435,2.995],[6.435,3.259],[6.435,3.431],[6.435,3.462],[6.435,3.494],[6.435,3.505],[6.435,3.506],[6.436,2.881],[6.436,2.914],[6.436,2.968],[6.436,2.983],[6.436,3.26],[6.436,3.418],[6.436,3.955],[6.437,2.88],[6.437,2.966],[6.437,3.367],[6.437,3.44],[6.437,3.523],[6.437,4.123],[6.438,2.891],[6.438,3.272],[6.438,3.457],[6.438,3.511],[6.439,2.917],[6.439,2.955],[6.439,3.312],[6.439,3.365],[6.439,3.79],[6.44,3.359],[6.44,3.365],[6.44,3.457],[6.44,3.47],[6.44,3.512],[6.44,3.522],[6.44,3.543],[6.44,3.791],[6.44,3.851],[6.44,3.86],[6.44,3.934],[6.441,2.914],[6.441,2.932],[6.441,3.264],[6.441,3.265],[6.441,3.335],[6.441,3.359],[6.441,3.369],[6.441,3.42],[6.441,3.512],[6.441,3.515],[6.441,3.837],[6.441,3.894],[6.441,3.902],[6.442,2.913],[6.442,2.919],[6.442,2.927],[6.442,3.266],[6.442,3.312],[6.442,3.342],[6.442,3.366],[6.442,3.367],[6.442,3.368],[6.442,3.372],[6.442,3.473],[6.443,2.946],[6.443,3.127],[6.443,3.305],[6.443,3.331],[6.443,3.351],[6.443,3.358],[6.443,3.369],[6.443,3.37],[6.443,3.473],[6.443,3.515],[6.444,2.924],[6.444,2.928],[6.444,3.147],[6.444,3.353],[6.444,3.359],[6.444,3.415],[6.444,3.416],[6.444,3.417],[6.444,3.429],[6.444,3.473],[6.444,3.516],[6.444,3.526],[6.445,3.214],[6.445,3.262],[6.445,3.331],[6.445,3.334],[6.445,3.335],[6.445,3.339],[6.445,3.346],[6.445,3.368],[6.445,3.404],[6.445,3.405],[6.445,3.406],[6.445,3.412],[6.445,3.415],[6.445,3.475],[6.445,3.517],[6.445,3.606],[6.446,3.221],[6.446,3.228],[6.446,3.229],[6.446,3.261],[6.446,3.311],[6.446,3.319],[6.446,3.327],[6.446,3.333],[6.446,3.346],[6.446,3.369],[6.446,3.404],[6.447,3.278],[6.447,3.327],[6.447,3.329],[6.447,3.337],[6.447,3.398],[6.447,3.399],[6.447,3.415],[6.448,3.28],[6.448,3.321],[6.448,3.326],[6.448,3.328],[6.448,3.342],[6.448,3.369],[6.448,3.397],[6.448,3.403],[6.448,3.405],[6.448,3.407],[6.448,3.413],[6.448,3.414],[6.448,3.415],[6.448,3.417],[6.448,3.462],[6.449,3.261],[6.449,3.306],[6.449,3.324],[6.449,3.327],[6.449,3.329],[6.449,3.34],[6.449,3.346],[6.449,3.398],[6.449,3.548],[6.449,3.612],[6.449,3.615],[6.45,3.265],[6.45,3.33],[6.45,3.336],[6.45,3.338],[6.45,3.34],[6.45,3.342],[6.45,3.345],[6.45,3.347],[6.45,3.349],[6.45,3.35],[6.45,3.356],[6.45,3.397],[6.45,3.402],[6.45,3.403],[6.45,3.409],[6.45,3.412],[6.45,3.55],[6.45,3.555],[6.451,3.172],[6.451,3.257],[6.451,3.338],[6.451,3.345],[6.451,3.346],[6.451,3.348],[6.451,3.352],[6.451,3.391],[6.451,3.392],[6.451,3.398],[6.451,3.4],[6.451,3.411],[6.452,3.162],[6.452,3.256],[6.452,3.282],[6.452,3.292],[6.452,3.329],[6.452,3.335],[6.452,3.391],[6.452,3.398],[6.452,3.399],[6.452,3.403],[6.452,3.406],[6.452,3.476],[6.452,3.478],[6.453,3.102],[6.453,3.144],[6.453,3.212],[6.453,3.213],[6.453,3.245],[6.453,3.252],[6.453,3.263],[6.453,3.335],[6.453,3.343],[6.453,3.349],[6.453,3.392],[6.453,3.397],[6.453,3.398],[6.453,3.399],[6.453,3.402],[6.453,3.434],[6.454,3.189],[6.454,3.26],[6.454,3.335],[6.454,3.348],[6.454,3.391],[6.454,3.393],[6.454,3.398],[6.454,3.4],[6.454,3.52],[6.454,3.556],[6.455,3.139],[6.455,3.232],[6.455,3.33],[6.455,3.334],[6.455,3.335],[6.455,3.349],[6.455,3.351],[6.455,3.392],[6.455,3.403],[6.455,3.567],[6.456,3.202],[6.456,3.221],[6.456,3.256],[6.456,3.262],[6.456,3.293],[6.456,3.306],[6.456,3.332],[6.456,3.341],[6.456,3.347],[6.456,3.348],[6.456,3.391],[6.456,3.398],[6.456,3.399],[6.457,3.202],[6.457,3.277],[6.457,3.297],[6.457,3.303],[6.457,3.344],[6.457,3.363],[6.457,3.368],[6.457,3.392],[6.457,3.393],[6.457,3.398],[6.457,3.401],[6.458,3.154],[6.458,3.159],[6.458,3.161],[6.458,3.202],[6.458,3.207],[6.458,3.212],[6.458,3.22],[6.458,3.287],[6.458,3.294],[6.458,3.359],[6.458,3.363],[6.458,3.381],[6.458,3.385],[6.458,3.389],[6.458,3.39],[6.458,3.391],[6.458,3.394],[6.458,3.395],[6.459,3.14],[6.459,3.141],[6.459,3.177],[6.459,3.203],[6.459,3.21],[6.459,3.211],[6.459,3.223],[6.459,3.229],[6.459,3.291],[6.459,3.295],[6.459,3.296],[6.459,3.3],[6.459,3.304],[6.459,3.306],[6.459,3.34],[6.459,3.354],[6.459,3.382],[6.459,3.393],[6.46,3.14],[6.46,3.19],[6.46,3.203],[6.46,3.205],[6.46,3.221],[6.46,3.225],[6.46,3.304],[6.46,3.323],[6.46,3.326],[6.46,3.33],[6.46,3.334],[6.46,3.339],[6.46,3.345],[6.46,3.385],[6.46,3.391],[6.46,3.554],[6.46,3.71],[6.461,2.96],[6.461,3.105],[6.461,3.142],[6.461,3.144],[6.461,3.166],[6.461,3.188],[6.461,3.203],[6.461,3.204],[6.461,3.244],[6.461,3.274],[6.461,3.301],[6.461,3.333],[6.461,3.342],[6.461,3.346],[6.461,3.352],[6.461,3.576],[6.461,3.68],[6.462,3.144],[6.462,3.154],[6.462,3.166],[6.462,3.173],[6.462,3.175],[6.462,3.201],[6.462,3.259],[6.462,3.338],[6.462,3.341],[6.462,3.342],[6.462,3.354],[6.462,3.36],[6.462,3.385],[6.462,3.387],[6.462,3.392],[6.462,3.554],[6.463,3.032],[6.463,3.172],[6.463,3.284],[6.463,3.296],[6.463,3.316],[6.463,3.355],[6.463,3.365],[6.463,3.385],[6.463,3.39],[6.463,3.392],[6.463,3.554],[6.463,3.585],[6.464,3.284],[6.464,3.292],[6.464,3.306],[6.464,3.34],[6.464,3.341],[6.464,3.345],[6.464,3.351],[6.464,3.387],[6.464,3.39],[6.464,3.391],[6.464,3.393],[6.465,3.149],[6.465,3.152],[6.465,3.153],[6.465,3.16],[6.465,3.166],[6.465,3.189],[6.465,3.19],[6.465,3.202],[6.465,3.272],[6.465,3.287],[6.465,3.295],[6.465,3.298],[6.465,3.314],[6.465,3.328],[6.465,3.331],[6.465,3.338],[6.465,3.34],[6.465,3.585],[6.466,3.141],[6.466,3.153],[6.466,3.174],[6.466,3.183],[6.466,3.294],[6.466,3.307],[6.466,3.312],[6.466,3.317],[6.466,3.34],[6.466,3.341],[6.466,3.343],[6.466,3.348],[6.466,3.353],[6.466,3.361],[6.466,3.368],[6.466,3.39],[6.466,3.391],[6.466,3.562],[6.467,3.115],[6.467,3.141],[6.467,3.182],[6.467,3.185],[6.467,3.187],[6.467,3.201],[6.467,3.284],[6.467,3.285],[6.467,3.286],[6.467,3.339],[6.467,3.35],[6.467,3.359],[6.467,3.36],[6.467,3.365],[6.467,3.632],[6.467,3.968],[6.468,3.18],[6.468,3.194],[6.468,3.201],[6.468,3.242],[6.468,3.283],[6.468,3.286],[6.468,3.289],[6.468,3.296],[6.468,3.312],[6.468,3.343],[6.468,3.36],[6.468,3.364],[6.468,3.368],[6.468,3.563],[6.468,3.703],[6.468,3.705],[6.469,3.172],[6.469,3.185],[6.469,3.192],[6.469,3.194],[6.469,3.195],[6.469,3.278],[6.469,3.28],[6.469,3.344],[6.469,3.349],[6.469,3.351],[6.469,3.565],[6.469,3.585],[6.469,3.586],[6.469,3.588],[6.469,3.664],[6.469,3.704],[6.469,3.71],[6.47,3.143],[6.47,3.191],[6.47,3.195],[6.47,3.201],[6.47,3.202],[6.47,3.228],[6.47,3.275],[6.47,3.278],[6.47,3.284],[6.47,3.293],[6.47,3.296],[6.47,3.306],[6.47,3.307],[6.47,3.348],[6.47,3.352],[6.47,3.566],[6.47,3.575],[6.47,3.581],[6.47,3.73],[6.47,3.731],[6.471,2.992],[6.471,3.025],[6.471,3.15],[6.471,3.162],[6.471,3.178],[6.471,3.191],[6.471,3.248],[6.471,3.271],[6.471,3.274],[6.471,3.277],[6.471,3.296],[6.471,3.304],[6.471,3.312],[6.471,3.341],[6.471,3.349],[6.471,3.35],[6.471,3.565],[6.471,3.731],[6.472,3.189],[6.472,3.272],[6.472,3.34],[6.472,3.345],[6.472,3.346],[6.472,3.633],[6.473,2.988],[6.473,3.151],[6.473,3.28],[6.473,3.312],[6.473,3.332],[6.473,3.35],[6.473,3.362],[6.473,3.629],[6.473,3.63],[6.473,3.631],[6.473,3.701],[6.473,3.725],[6.473,3.75],[6.473,3.814],[6.474,3.049],[6.474,3.216],[6.474,3.244],[6.474,3.344],[6.474,3.35],[6.474,3.357],[6.474,3.606],[6.474,3.631],[6.474,3.722],[6.474,3.728],[6.474,3.732],[6.474,3.741],[6.474,3.803],[6.474,3.81],[6.475,2.967],[6.475,3.17],[6.475,3.18],[6.475,3.246],[6.475,3.292],[6.475,3.312],[6.475,3.328],[6.475,3.338],[6.475,3.345],[6.475,3.379],[6.475,3.739],[6.475,3.762],[6.476,3.163],[6.476,3.281],[6.476,3.289],[6.476,3.332],[6.476,3.333],[6.476,3.342],[6.476,3.774],[6.476,3.781],[6.477,3.032],[6.477,3.057],[6.477,3.123],[6.477,3.124],[6.477,3.142],[6.477,3.158],[6.477,3.332],[6.477,3.34],[6.477,3.347],[6.477,3.352],[6.477,3.719],[6.477,3.778],[6.478,3.053],[6.478,3.072],[6.478,3.145],[6.478,3.272],[6.478,3.375],[6.478,3.385],[6.478,3.59],[6.478,3.704],[6.479,3.143],[6.479,3.331],[6.479,3.344],[6.479,3.345],[6.479,3.388],[6.479,3.705],[6.479,3.758],[6.479,3.774],[6.48,2.996],[6.48,3.334],[6.48,3.337],[6.48,3.342],[6.48,3.343],[6.48,3.344],[6.48,3.346],[6.48,3.347],[6.48,3.386],[6.48,3.727],[6.481,3.049],[6.481,3.052],[6.481,3.288],[6.481,3.337],[6.481,3.374],[6.482,3.17],[6.482,3.186],[6.482,3.188],[6.482,3.346],[6.482,3.363],[6.482,3.372],[6.482,3.377],[6.482,3.378],[6.482,3.721],[6.483,3.051],[6.483,3.168],[6.483,3.34],[6.483,3.372],[6.483,3.373],[6.483,3.377],[6.483,3.381],[6.483,3.387],[6.483,3.724],[6.483,3.76],[6.484,3.013],[6.484,3.077],[6.484,3.187],[6.484,3.372],[6.484,3.38],[6.484,3.382],[6.484,3.763],[6.485,3.028],[6.485,3.37],[6.485,3.384],[6.485,3.575],[6.486,3.174],[6.486,3.185],[6.486,3.314],[6.486,3.358],[6.486,3.362],[6.486,3.369],[6.486,3.386],[6.487,2.905],[6.487,2.959],[6.487,3.06],[6.487,3.074],[6.487,3.153],[6.487,3.165],[6.487,3.328],[6.487,3.332],[6.487,3.336],[6.487,3.353],[6.487,3.376],[6.487,3.381],[6.487,3.891],[6.488,2.959],[6.488,3.336],[6.488,3.338],[6.488,3.351],[6.488,3.363],[6.488,3.375],[6.488,3.383],[6.488,3.385],[6.488,3.386],[6.488,3.58],[6.488,3.584],[6.489,3.026],[6.489,3.08],[6.489,3.154],[6.489,3.33],[6.489,3.333],[6.489,3.349],[6.489,3.35],[6.489,3.351],[6.489,3.353],[6.489,3.359],[6.489,3.381],[6.489,3.382],[6.49,3.2],[6.49,3.347],[6.49,3.35],[6.49,3.352],[6.49,3.355],[6.49,3.381],[6.491,3.328],[6.491,3.337],[6.491,3.349],[6.491,3.35],[6.491,3.358],[6.492,3.156],[6.492,3.174],[6.492,3.246],[6.492,3.329],[6.492,3.337],[6.492,3.344],[6.493,3.2],[6.493,3.326],[6.493,3.347],[6.493,3.382],[6.493,3.387],[6.494,3.093],[6.494,3.095],[6.494,3.119],[6.494,3.125],[6.494,3.142],[6.494,3.144],[6.494,3.173],[6.494,3.296],[6.494,3.327],[6.494,3.332],[6.494,3.38],[6.494,3.381],[6.495,3.09],[6.495,3.093],[6.495,3.126],[6.495,3.244],[6.495,3.321],[6.495,3.326],[6.495,3.339],[6.495,3.34],[6.495,3.345],[6.495,3.357],[6.495,3.362],[6.495,3.381],[6.495,3.583],[6.496,2.996],[6.496,2.999],[6.496,3.085],[6.496,3.092],[6.496,3.125],[6.496,3.171],[6.496,3.172],[6.496,3.317],[6.496,3.327],[6.496,3.34],[6.496,3.361],[6.496,3.386],[6.496,3.388],[6.497,3.119],[6.497,3.196],[6.497,3.326],[6.497,3.345],[6.497,3.347],[6.497,3.348],[6.497,3.358],[6.497,3.377],[6.497,3.378],[6.497,3.388],[6.497,3.585],[6.498,3.014],[6.498,3.055],[6.498,3.144],[6.498,3.247],[6.498,3.3],[6.498,3.328],[6.498,3.33],[6.498,3.334],[6.498,3.344],[6.498,3.345],[6.498,3.347],[6.498,3.36],[6.498,3.363],[6.498,3.38],[6.498,3.588],[6.498,3.589],[6.498,3.972],[6.499,3.063],[6.499,3.2],[6.499,3.301],[6.499,3.336],[6.499,3.343],[6.499,3.347],[6.499,3.377],[6.499,3.381],[6.499,3.589],[6.499,3.59],[6.5,3.026],[6.5,3.042],[6.5,3.171],[6.5,3.196],[6.5,3.207],[6.5,3.327],[6.5,3.329],[6.5,3.333],[6.5,3.336],[6.5,3.349],[6.5,3.377],[6.5,3.379],[6.5,3.388],[6.501,3.028],[6.501,3.115],[6.501,3.345],[6.501,3.352],[6.501,3.366],[6.501,3.389],[6.501,3.581],[6.501,3.598],[6.502,3.172],[6.502,3.198],[6.502,3.199],[6.502,3.305],[6.502,3.328],[6.502,3.333],[6.502,3.345],[6.502,3.346],[6.502,3.347],[6.502,3.354],[6.502,3.361],[6.502,3.373],[6.502,3.382],[6.502,3.387],[6.503,2.927],[6.503,3.165],[6.503,3.178],[6.503,3.183],[6.503,3.207],[6.503,3.329],[6.503,3.337],[6.503,3.349],[6.503,3.359],[6.503,3.384],[6.503,3.583],[6.504,3.174],[6.504,3.308],[6.504,3.31],[6.504,3.332],[6.504,3.344],[6.504,3.352],[6.504,3.359],[6.504,3.36],[6.504,3.377],[6.504,3.387],[6.505,3.167],[6.505,3.192],[6.505,3.224],[6.505,3.298],[6.505,3.351],[6.505,3.352],[6.505,3.363],[6.505,3.387],[6.505,3.603],[6.506,3.17],[6.506,3.202],[6.506,3.302],[6.506,3.352],[6.506,3.353],[6.506,3.355],[6.506,3.366],[6.506,3.376],[6.507,3.192],[6.507,3.194],[6.507,3.199],[6.507,3.2],[6.507,3.261],[6.507,3.262],[6.507,3.304],[6.507,3.308],[6.507,3.335],[6.507,3.349],[6.507,3.357],[6.507,3.366],[6.507,3.374],[6.507,3.381],[6.507,3.391],[6.507,3.603],[6.508,3.171],[6.508,3.331],[6.508,3.335],[6.508,3.344],[6.508,3.346],[6.508,3.359],[6.508,3.374],[6.508,3.384],[6.509,2.955],[6.509,3.203],[6.509,3.297],[6.509,3.307],[6.509,3.312],[6.509,3.314],[6.509,3.329],[6.509,3.337],[6.509,3.34],[6.509,3.348],[6.509,3.349],[6.509,3.357],[6.509,3.359],[6.509,3.367],[6.509,3.368],[6.509,3.373],[6.509,3.374],[6.509,3.387],[6.509,3.611],[6.51,3.311],[6.51,3.315],[6.51,3.318],[6.51,3.337],[6.51,3.349],[6.51,3.359],[6.51,3.362],[6.51,3.364],[6.51,3.372],[6.51,3.375],[6.51,3.376],[6.51,3.384],[6.51,3.387],[6.51,3.775],[6.511,3.253],[6.511,3.308],[6.511,3.309],[6.511,3.314],[6.511,3.34],[6.511,3.346],[6.511,3.347],[6.511,3.348],[6.511,3.36],[6.511,3.362],[6.511,3.384],[6.512,3.307],[6.512,3.31],[6.512,3.316],[6.512,3.317],[6.512,3.334],[6.512,3.335],[6.512,3.347],[6.512,3.357],[6.512,3.358],[6.512,3.362],[6.512,3.378],[6.513,2.949],[6.513,3.276],[6.513,3.31],[6.513,3.317],[6.513,3.322],[6.513,3.342],[6.513,3.348],[6.513,3.356],[6.513,3.357],[6.513,3.374],[6.513,3.384],[6.514,3.252],[6.514,3.279],[6.514,3.306],[6.514,3.316],[6.514,3.318],[6.514,3.321],[6.514,3.342],[6.514,3.357],[6.514,3.371],[6.514,3.376],[6.514,3.396],[6.514,3.397],[6.515,3.28],[6.515,3.307],[6.515,3.317],[6.515,3.318],[6.515,3.328],[6.515,3.331],[6.515,3.335],[6.515,3.343],[6.515,3.345],[6.515,3.356],[6.515,3.36],[6.516,3.255],[6.516,3.26],[6.516,3.319],[6.516,3.328],[6.516,3.344],[6.516,3.36],[6.516,3.361],[6.517,3.311],[6.517,3.329],[6.517,3.33],[6.517,3.347],[6.517,3.361],[6.517,3.362],[6.517,3.366],[6.517,3.367],[6.518,3.318],[6.518,3.339],[6.518,3.345],[6.518,3.354],[6.518,3.368],[6.518,3.837],[6.519,3.252],[6.519,3.318],[6.519,3.34],[6.519,3.346],[6.519,3.351],[6.519,3.359],[6.519,3.362],[6.52,3.256],[6.52,3.317],[6.52,3.318],[6.52,3.319],[6.52,3.323],[6.52,3.324],[6.52,3.328],[6.52,3.329],[6.52,3.331],[6.52,3.337],[6.52,3.338],[6.52,3.364],[6.52,3.367],[6.52,3.374],[6.521,3.261],[6.521,3.294],[6.521,3.318],[6.521,3.327],[6.521,3.332],[6.521,3.339],[6.521,3.344],[6.521,3.345],[6.521,3.352],[6.521,3.358],[6.521,3.365],[6.521,3.369],[6.521,3.382],[6.522,3.258],[6.522,3.295],[6.522,3.318],[6.522,3.32],[6.522,3.321],[6.522,3.327],[6.522,3.333],[6.522,3.346],[6.522,3.369],[6.522,3.381],[6.523,3.238],[6.523,3.251],[6.523,3.271],[6.523,3.322],[6.523,3.337],[6.523,3.339],[6.523,3.342],[6.523,3.355],[6.523,3.368],[6.523,3.37],[6.523,3.378],[6.523,3.38],[6.524,3.249],[6.524,3.301],[6.524,3.302],[6.524,3.335],[6.524,3.339],[6.524,3.341],[6.524,3.343],[6.524,3.369],[6.524,3.377],[6.524,3.384],[6.524,3.387],[6.525,3.232],[6.525,3.295],[6.525,3.305],[6.525,3.307],[6.525,3.323],[6.525,3.328],[6.525,3.338],[6.525,3.35],[6.525,3.353],[6.525,3.355],[6.525,3.378],[6.525,3.384],[6.525,3.385],[6.526,3.215],[6.526,3.216],[6.526,3.286],[6.526,3.295],[6.526,3.317],[6.526,3.322],[6.526,3.355],[6.526,3.357],[6.526,3.385],[6.526,3.386],[6.527,3.246],[6.527,3.299],[6.527,3.309],[6.527,3.342],[6.527,3.349],[6.527,3.356],[6.527,3.365],[6.527,3.366],[6.527,3.368],[6.527,3.377],[6.527,3.385],[6.528,3.214],[6.528,3.239],[6.528,3.31],[6.528,3.344],[6.528,3.345],[6.528,3.351],[6.528,3.359],[6.528,3.387],[6.529,3.254],[6.529,3.259],[6.529,3.266],[6.529,3.271],[6.529,3.3],[6.529,3.309],[6.529,3.319],[6.529,3.321],[6.529,3.324],[6.529,3.344],[6.529,3.347],[6.529,3.353],[6.529,3.357],[6.529,3.359],[6.529,3.377],[6.53,3.26],[6.53,3.305],[6.53,3.321],[6.53,3.327],[6.53,3.341],[6.53,3.354],[6.53,3.38],[6.53,3.395],[6.531,3.259],[6.531,3.331],[6.531,3.341],[6.531,3.342],[6.531,3.343],[6.531,3.346],[6.531,3.348],[6.531,3.363],[6.531,3.366],[6.531,3.373],[6.531,3.39],[6.531,3.526],[6.532,3.245],[6.532,3.279],[6.532,3.295],[6.532,3.301],[6.532,3.343],[6.532,3.344],[6.532,3.346],[6.532,3.359],[6.532,3.36],[6.532,3.382],[6.532,3.389],[6.532,3.392],[6.532,3.396],[6.533,3.226],[6.533,3.237],[6.533,3.259],[6.533,3.31],[6.533,3.342],[6.533,3.344],[6.533,3.348],[6.533,3.353],[6.533,3.354],[6.533,3.355],[6.533,3.365],[6.533,3.375],[6.533,3.522],[6.534,3.237],[6.534,3.322],[6.534,3.324],[6.534,3.327],[6.534,3.345],[6.534,3.346],[6.534,3.347],[6.534,3.353],[6.534,3.354],[6.534,3.356],[6.534,3.391],[6.534,3.392],[6.534,3.398],[6.535,3.327],[6.535,3.339],[6.535,3.343],[6.535,3.355],[6.535,3.371],[6.535,3.377],[6.535,3.39],[6.535,3.396],[6.536,3.227],[6.536,3.266],[6.536,3.34],[6.536,3.342],[6.536,3.345],[6.536,3.352],[6.536,3.368],[6.536,3.372],[6.536,3.38],[6.536,3.383],[6.536,3.385],[6.536,3.389],[6.536,3.39],[6.536,3.392],[6.537,3.314],[6.537,3.323],[6.537,3.34],[6.537,3.35],[6.537,3.354],[6.537,3.355],[6.537,3.373],[6.538,3.245],[6.538,3.273],[6.538,3.329],[6.538,3.335],[6.538,3.369],[6.538,3.375],[6.538,3.38],[6.538,3.395],[6.538,3.554],[6.539,3.263],[6.539,3.297],[6.539,3.309],[6.539,3.343],[6.539,3.344],[6.539,3.355],[6.539,3.363],[6.539,3.364],[6.539,3.37],[6.539,3.381],[6.539,3.382],[6.539,3.385],[6.539,3.39],[6.539,3.398],[6.54,3.224],[6.54,3.231],[6.54,3.256],[6.54,3.26],[6.54,3.279],[6.54,3.294],[6.54,3.3],[6.54,3.371],[6.54,3.372],[6.54,3.379],[6.54,3.381],[6.54,3.382],[6.54,3.394],[6.54,3.395],[6.54,3.397],[6.54,3.5],[6.54,3.55],[6.54,3.552],[6.541,3.281],[6.541,3.283],[6.541,3.292],[6.541,3.32],[6.541,3.362],[6.541,3.367],[6.541,3.38],[6.541,3.382],[6.541,3.391],[6.541,3.392],[6.541,3.393],[6.541,3.404],[6.542,3.224],[6.542,3.228],[6.542,3.253],[6.542,3.254],[6.542,3.282],[6.542,3.292],[6.542,3.3],[6.542,3.36],[6.542,3.376],[6.542,3.38],[6.542,3.405],[6.543,3.261],[6.543,3.277],[6.543,3.298],[6.543,3.3],[6.543,3.384],[6.543,3.393],[6.543,3.403],[6.544,3.264],[6.544,3.268],[6.544,3.286],[6.544,3.289],[6.544,3.313],[6.544,3.376],[6.544,3.38],[6.545,3.339],[6.545,3.344],[6.545,3.36],[6.545,3.367],[6.545,3.37],[6.545,3.374],[6.545,3.375],[6.545,3.39],[6.545,3.393],[6.546,3.254],[6.546,3.268],[6.546,3.273],[6.546,3.302],[6.546,3.324],[6.546,3.329],[6.546,3.377],[6.546,3.394],[6.546,3.395],[6.546,3.543],[6.547,3.219],[6.547,3.265],[6.547,3.266],[6.547,3.3],[6.547,3.304],[6.547,3.306],[6.547,3.307],[6.547,3.309],[6.547,3.33],[6.547,3.361],[6.547,3.364],[6.547,3.369],[6.547,3.382],[6.547,3.385],[6.547,3.535],[6.547,3.543],[6.548,3.248],[6.548,3.262],[6.548,3.268],[6.548,3.359],[6.548,3.363],[6.548,3.371],[6.548,3.376],[6.548,3.387],[6.548,3.392],[6.548,3.394],[6.548,3.401],[6.549,3.218],[6.549,3.231],[6.549,3.261],[6.549,3.263],[6.549,3.266],[6.549,3.302],[6.549,3.319],[6.549,3.328],[6.549,3.349],[6.549,3.36],[6.549,3.362],[6.549,3.371],[6.549,3.393],[6.549,3.405],[6.549,3.479],[6.55,3.236],[6.55,3.256],[6.55,3.26],[6.55,3.3],[6.55,3.333],[6.55,3.338],[6.55,3.37],[6.55,3.403],[6.551,3.239],[6.551,3.277],[6.551,3.278],[6.551,3.296],[6.551,3.324],[6.551,3.326],[6.551,3.35],[6.551,3.354],[6.551,3.36],[6.551,3.482],[6.552,3.208],[6.552,3.219],[6.552,3.227],[6.552,3.244],[6.552,3.254],[6.552,3.266],[6.552,3.269],[6.552,3.277],[6.552,3.281],[6.552,3.282],[6.552,3.302],[6.552,3.305],[6.552,3.328],[6.552,3.329],[6.552,3.337],[6.552,3.339],[6.552,3.359],[6.552,3.368],[6.552,3.386],[6.552,3.388],[6.552,3.398],[6.552,3.4],[6.553,3.222],[6.553,3.225],[6.553,3.248],[6.553,3.268],[6.553,3.295],[6.553,3.326],[6.553,3.332],[6.553,3.34],[6.553,3.343],[6.553,3.392],[6.553,3.393],[6.554,3.247],[6.554,3.264],[6.554,3.281],[6.554,3.283],[6.554,3.302],[6.554,3.343],[6.554,3.36],[6.554,3.39],[6.555,3.279],[6.555,3.302],[6.555,3.329],[6.555,3.33],[6.555,3.354],[6.555,3.389],[6.555,3.397],[6.555,3.399],[6.555,3.401],[6.556,3.248],[6.556,3.264],[6.556,3.297],[6.556,3.301],[6.556,3.307],[6.556,3.328],[6.556,3.331],[6.556,3.334],[6.556,3.356],[6.556,3.392],[6.557,3.227],[6.557,3.297],[6.557,3.301],[6.557,3.329],[6.557,3.339],[6.557,3.34],[6.557,3.347],[6.557,3.349],[6.557,3.362],[6.557,3.364],[6.557,3.37],[6.557,3.385],[6.558,3.28],[6.558,3.333],[6.558,3.339],[6.558,3.361],[6.558,3.386],[6.558,3.4],[6.558,3.476],[6.559,3.245],[6.559,3.28],[6.559,3.281],[6.559,3.336],[6.559,3.344],[6.559,3.345],[6.559,3.349],[6.559,3.481],[6.559,3.54],[6.56,3.295],[6.56,3.328],[6.56,3.337],[6.56,3.368],[6.56,3.369],[6.56,3.371],[6.56,3.387],[6.561,3.237],[6.561,3.329],[6.561,3.332],[6.561,3.344],[6.561,3.345],[6.561,3.348],[6.561,3.37],[6.562,3.251],[6.562,3.269],[6.562,3.331],[6.562,3.384],[6.563,3.225],[6.563,3.251],[6.563,3.293],[6.563,3.331],[6.563,3.333],[6.563,3.344],[6.563,3.347],[6.563,3.369],[6.563,3.371],[6.563,3.372],[6.563,3.399],[6.563,3.481],[6.563,3.503],[6.563,3.521],[6.564,3.243],[6.564,3.251],[6.564,3.331],[6.564,3.339],[6.564,3.373],[6.564,3.384],[6.564,3.597],[6.565,3.239],[6.565,3.336],[6.565,3.371],[6.565,3.376],[6.565,3.38],[6.565,3.551],[6.565,3.59],[6.566,3.256],[6.566,3.275],[6.566,3.294],[6.566,3.592],[6.567,3.199],[6.567,3.302],[6.567,3.336],[6.567,3.338],[6.567,3.358],[6.567,3.479],[6.567,3.592],[6.568,3.246],[6.568,3.29],[6.568,3.342],[6.568,3.366],[6.568,3.374],[6.569,3.258],[6.569,3.261],[6.569,3.321],[6.569,3.365],[6.569,3.366],[6.569,3.367],[6.569,3.482],[6.57,3.258],[6.57,3.289],[6.57,3.29],[6.57,3.303],[6.57,3.304],[6.57,3.341],[6.57,3.352],[6.57,3.366],[6.57,3.372],[6.57,3.373],[6.57,3.394],[6.57,3.395],[6.571,3.284],[6.571,3.288],[6.571,3.343],[6.571,3.351],[6.571,3.365],[6.571,3.375],[6.572,3.272],[6.572,3.292],[6.572,3.343],[6.572,3.345],[6.572,3.347],[6.572,3.349],[6.572,3.351],[6.572,3.352],[6.572,3.393],[6.572,3.399],[6.572,3.48],[6.573,3.344],[6.573,3.35],[6.573,3.483],[6.574,3.281],[6.574,3.342],[6.574,3.344],[6.574,3.358],[6.574,3.393],[6.574,3.395],[6.574,3.594],[6.575,3.215],[6.575,3.258],[6.575,3.304],[6.575,3.343],[6.575,3.355],[6.575,3.362],[6.575,3.37],[6.575,3.391],[6.575,3.399],[6.576,3.264],[6.576,3.36],[6.576,3.372],[6.576,3.541],[6.577,3.21],[6.577,3.261],[6.577,3.281],[6.577,3.282],[6.577,3.342],[6.577,3.357],[6.577,3.36],[6.577,3.532],[6.577,3.593],[6.577,3.627],[6.577,3.968],[6.578,3.207],[6.578,3.212],[6.578,3.263],[6.578,3.281],[6.578,3.282],[6.578,3.289],[6.578,3.29],[6.578,3.342],[6.578,3.36],[6.578,3.41],[6.578,3.523],[6.579,3.208],[6.579,3.335],[6.579,3.342],[6.579,3.369],[6.579,3.387],[6.58,3.208],[6.58,3.239],[6.58,3.279],[6.58,3.341],[6.58,3.406],[6.58,3.532],[6.58,3.588],[6.58,3.627],[6.581,3.348],[6.581,3.359],[6.581,3.379],[6.581,3.384],[6.581,3.399],[6.581,3.401],[6.581,3.525],[6.581,3.564],[6.582,3.341],[6.582,3.348],[6.582,3.358],[6.582,3.526],[6.583,3.246],[6.583,3.252],[6.583,3.307],[6.583,3.38],[6.583,3.381],[6.583,3.594],[6.583,3.989],[6.584,3.247],[6.584,3.357],[6.584,3.382],[6.584,3.538],[6.584,3.565],[6.584,3.977],[6.585,3.297],[6.585,3.301],[6.585,3.305],[6.585,3.365],[6.585,3.383],[6.585,3.562],[6.585,3.963],[6.586,3.237],[6.586,3.245],[6.586,3.345],[6.586,3.354],[6.586,3.358],[6.586,3.364],[6.586,3.365],[6.586,3.384],[6.586,3.398],[6.586,3.548],[6.586,3.565],[6.586,3.971],[6.587,3.254],[6.587,3.306],[6.587,3.357],[6.587,3.374],[6.587,3.384],[6.587,3.385],[6.587,3.395],[6.587,3.401],[6.587,3.652],[6.588,3.214],[6.588,3.346],[6.588,3.357],[6.588,3.363],[6.588,3.398],[6.588,3.514],[6.588,3.969],[6.589,3.224],[6.589,3.291],[6.589,3.298],[6.589,3.362],[6.589,3.38],[6.589,3.383],[6.589,3.398],[6.589,3.404],[6.589,3.512],[6.589,3.52],[6.589,3.979],[6.59,3.275],[6.59,3.339],[6.59,3.345],[6.59,3.352],[6.59,3.363],[6.59,3.375],[6.59,3.382],[6.59,3.398],[6.59,3.404],[6.59,3.969],[6.59,3.98],[6.591,3.228],[6.591,3.306],[6.591,3.395],[6.591,3.4],[6.591,3.589],[6.591,3.979],[6.592,3.237],[6.592,3.29],[6.592,3.3],[6.592,3.343],[6.592,3.4],[6.592,3.978],[6.593,3.222],[6.593,3.234],[6.593,3.29],[6.593,3.304],[6.593,3.343],[6.593,3.359],[6.593,3.395],[6.593,3.398],[6.593,3.522],[6.593,3.652],[6.594,3.269],[6.594,3.304],[6.594,3.342],[6.594,3.344],[6.594,3.346],[6.594,3.385],[6.594,3.493],[6.595,3.228],[6.595,3.283],[6.595,3.345],[6.595,3.346],[6.595,3.347],[6.595,3.39],[6.595,3.392],[6.595,3.396],[6.595,3.404],[6.595,3.523],[6.595,3.802],[6.596,3.281],[6.596,3.345],[6.596,3.346],[6.596,3.351],[6.596,3.386],[6.596,3.393],[6.596,3.396],[6.596,3.4],[6.596,3.505],[6.597,3.289],[6.597,3.294],[6.597,3.338],[6.597,3.344],[6.597,3.346],[6.597,3.349],[6.597,3.35],[6.597,3.354],[6.597,3.367],[6.597,3.388],[6.597,3.39],[6.597,3.392],[6.598,3.237],[6.598,3.242],[6.598,3.272],[6.598,3.3],[6.598,3.35],[6.598,3.355],[6.598,3.392],[6.598,3.5],[6.599,3.245],[6.599,3.293],[6.599,3.328],[6.599,3.342],[6.599,3.343],[6.599,3.345],[6.599,3.346],[6.599,3.347],[6.599,3.397],[6.599,3.422],[6.599,3.519],[6.599,3.525],[6.599,3.526],[6.6,3.3],[6.6,3.308],[6.6,3.344],[6.6,3.346],[6.6,3.35],[6.6,3.353],[6.6,3.354],[6.6,3.376],[6.6,3.383],[6.6,3.387],[6.6,3.39],[6.6,3.396],[6.6,3.423],[6.6,3.588],[6.6,3.94],[6.601,3.246],[6.601,3.254],[6.601,3.267],[6.601,3.301],[6.601,3.347],[6.601,3.363],[6.601,3.364],[6.601,3.366],[6.601,3.386],[6.601,3.388],[6.601,3.395],[6.601,3.396],[6.601,3.4],[6.601,3.418],[6.601,3.506],[6.601,3.518],[6.602,3.271],[6.602,3.296],[6.602,3.306],[6.602,3.31],[6.602,3.324],[6.602,3.339],[6.602,3.345],[6.602,3.348],[6.602,3.354],[6.602,3.362],[6.602,3.365],[6.602,3.386],[6.602,3.396],[6.602,3.423],[6.602,3.492],[6.602,3.615],[6.603,3.236],[6.603,3.243],[6.603,3.268],[6.603,3.291],[6.603,3.293],[6.603,3.306],[6.603,3.325],[6.603,3.34],[6.603,3.353],[6.603,3.354],[6.603,3.362],[6.603,3.382],[6.603,3.385],[6.603,3.387],[6.603,3.388],[6.603,3.39],[6.603,3.491],[6.603,3.493],[6.603,3.522],[6.603,3.615],[6.604,3.254],[6.604,3.28],[6.604,3.283],[6.604,3.302],[6.604,3.34],[6.604,3.341],[6.604,3.344],[6.604,3.346],[6.604,3.347],[6.604,3.372],[6.604,3.382],[6.604,3.386],[6.604,3.39],[6.604,3.392],[6.604,3.397],[6.604,3.607],[6.604,3.616],[6.605,3.261],[6.605,3.286],[6.605,3.311],[6.605,3.318],[6.605,3.341],[6.605,3.346],[6.605,3.374],[6.605,3.379],[6.605,3.384],[6.605,3.43],[6.605,3.484],[6.605,3.506],[6.605,3.544],[6.605,3.595],[6.605,3.606],[6.605,3.629],[6.606,3.235],[6.606,3.254],[6.606,3.273],[6.606,3.3],[6.606,3.353],[6.606,3.371],[6.606,3.378],[6.606,3.39],[6.606,3.402],[6.606,3.507],[6.606,3.603],[6.607,3.258],[6.607,3.274],[6.607,3.28],[6.607,3.32],[6.607,3.326],[6.607,3.35],[6.607,3.37],[6.607,3.431],[6.607,3.492],[6.607,3.612],[6.608,3.261],[6.608,3.292],[6.608,3.327],[6.608,3.341],[6.608,3.342],[6.608,3.358],[6.608,3.398],[6.608,3.422],[6.608,3.424],[6.608,3.425],[6.608,3.485],[6.608,3.504],[6.608,3.989],[6.609,3.262],[6.609,3.285],[6.609,3.312],[6.609,3.32],[6.609,3.327],[6.609,3.343],[6.609,3.355],[6.609,3.356],[6.609,3.389],[6.609,3.397],[6.609,3.398],[6.609,3.399],[6.609,3.499],[6.609,3.988],[6.61,3.258],[6.61,3.265],[6.61,3.301],[6.61,3.311],[6.61,3.318],[6.61,3.361],[6.61,3.397],[6.61,3.484],[6.61,3.508],[6.61,3.513],[6.61,3.542],[6.611,3.265],[6.611,3.273],[6.611,3.297],[6.611,3.298],[6.611,3.301],[6.611,3.311],[6.611,3.313],[6.611,3.323],[6.611,3.329],[6.611,3.357],[6.611,3.391],[6.611,3.501],[6.612,3.294],[6.612,3.302],[6.612,3.303],[6.612,3.309],[6.612,3.312],[6.612,3.314],[6.612,3.345],[6.612,3.395],[6.612,3.396],[6.612,3.417],[6.612,3.513],[6.612,3.526],[6.613,3.299],[6.613,3.31],[6.613,3.314],[6.613,3.315],[6.613,3.349],[6.613,3.497],[6.613,3.502],[6.613,3.503],[6.613,3.596],[6.613,3.898],[6.614,3.26],[6.614,3.281],[6.614,3.305],[6.614,3.309],[6.614,3.314],[6.614,3.315],[6.614,3.326],[6.614,3.327],[6.614,3.347],[6.614,3.348],[6.614,3.374],[6.614,3.538],[6.614,3.543],[6.615,3.296],[6.615,3.305],[6.615,3.312],[6.615,3.313],[6.615,3.318],[6.615,3.327],[6.615,3.342],[6.615,3.346],[6.615,3.371],[6.615,3.396],[6.615,3.475],[6.615,3.499],[6.615,3.501],[6.615,3.566],[6.615,3.571],[6.615,3.596],[6.615,3.604],[6.616,3.329],[6.616,3.346],[6.616,3.362],[6.616,3.371],[6.616,3.499],[6.616,3.504],[6.616,3.534],[6.617,3.273],[6.617,3.296],[6.617,3.305],[6.617,3.31],[6.617,3.316],[6.617,3.321],[6.617,3.331],[6.617,3.375],[6.617,3.474],[6.617,3.508],[6.618,3.307],[6.618,3.316],[6.618,3.33],[6.618,3.331],[6.618,3.366],[6.618,3.373],[6.618,3.397],[6.618,3.474],[6.618,3.488],[6.618,3.509],[6.618,3.563],[6.618,3.569],[6.618,3.706],[6.619,3.315],[6.619,3.319],[6.619,3.32],[6.619,3.327],[6.619,3.346],[6.619,3.376],[6.619,3.377],[6.619,3.51],[6.619,3.518],[6.619,3.568],[6.62,3.279],[6.62,3.307],[6.62,3.314],[6.62,3.327],[6.62,3.328],[6.62,3.372],[6.62,3.396],[6.62,3.52],[6.621,3.276],[6.621,3.305],[6.621,3.306],[6.621,3.323],[6.621,3.324],[6.621,3.328],[6.621,3.336],[6.621,3.354],[6.621,3.373],[6.621,3.384],[6.621,3.498],[6.621,3.5],[6.621,3.503],[6.621,3.516],[6.621,3.519],[6.621,3.521],[6.621,3.557],[6.622,3.244],[6.622,3.274],[6.622,3.303],[6.622,3.307],[6.622,3.308],[6.622,3.313],[6.622,3.334],[6.622,3.353],[6.622,3.397],[6.622,3.482],[6.622,3.493],[6.622,3.497],[6.622,3.498],[6.622,3.502],[6.622,3.503],[6.622,3.514],[6.622,3.547],[6.623,3.285],[6.623,3.297],[6.623,3.308],[6.623,3.309],[6.623,3.31],[6.623,3.319],[6.623,3.37],[6.623,3.497],[6.623,3.501],[6.623,3.502],[6.623,3.504],[6.623,3.557],[6.624,3.282],[6.624,3.291],[6.624,3.326],[6.624,3.352],[6.624,3.483],[6.624,3.495],[6.624,3.498],[6.624,3.502],[6.624,3.503],[6.625,3.246],[6.625,3.256],[6.625,3.317],[6.625,3.32],[6.625,3.323],[6.625,3.325],[6.625,3.332],[6.625,3.392],[6.625,3.488],[6.625,3.492],[6.625,3.495],[6.625,3.574],[6.626,3.275],[6.626,3.281],[6.626,3.312],[6.626,3.541],[6.626,3.549],[6.626,3.913],[6.626,3.988],[6.627,3.247],[6.627,3.307],[6.627,3.309],[6.627,3.324],[6.627,3.481],[6.627,3.482],[6.627,3.505],[6.627,3.533],[6.627,3.541],[6.628,3.28],[6.628,3.307],[6.628,3.308],[6.628,3.32],[6.628,3.321],[6.628,3.324],[6.628,3.335],[6.628,3.507],[6.628,3.51],[6.629,3.313],[6.629,3.353],[6.629,3.377],[6.63,3.26],[6.63,3.313],[6.63,3.316],[6.63,3.324],[6.63,3.338],[6.631,3.313],[6.631,3.32],[6.631,3.342],[6.631,3.343],[6.631,3.347],[6.631,3.509],[6.631,3.986],[6.632,3.298],[6.632,3.313],[6.632,3.324],[6.632,3.34],[6.632,3.354],[6.632,3.362],[6.632,3.377],[6.632,3.509],[6.632,3.535],[6.632,3.538],[6.633,3.313],[6.633,3.327],[6.633,3.341],[6.633,3.378],[6.633,3.386],[6.633,3.5],[6.633,3.503],[6.633,3.59],[6.634,3.281],[6.634,3.283],[6.634,3.294],[6.634,3.303],[6.634,3.305],[6.634,3.306],[6.634,3.31],[6.634,3.312],[6.634,3.316],[6.634,3.336],[6.634,3.337],[6.634,3.34],[6.634,3.372],[6.634,3.375],[6.634,3.39],[6.634,3.773],[6.634,3.875],[6.634,3.955],[6.635,3.28],[6.635,3.305],[6.635,3.339],[6.635,3.349],[6.635,3.383],[6.636,3.313],[6.636,3.33],[6.636,3.338],[6.636,3.339],[6.636,3.343],[6.636,3.344],[6.636,3.348],[6.636,3.38],[6.636,3.988],[6.636,4.052],[6.637,3.259],[6.637,3.331],[6.637,3.333],[6.637,3.334],[6.637,3.343],[6.637,3.362],[6.637,3.379],[6.637,3.381],[6.637,3.48],[6.637,3.486],[6.637,3.487],[6.637,3.547],[6.637,3.715],[6.638,3.283],[6.638,3.328],[6.638,3.342],[6.638,3.374],[6.638,3.376],[6.638,3.396],[6.639,3.259],[6.639,3.299],[6.639,3.34],[6.639,3.342],[6.639,3.343],[6.639,3.359],[6.639,3.36],[6.639,3.362],[6.639,3.549],[6.639,3.554],[6.64,3.276],[6.64,3.278],[6.64,3.285],[6.64,3.297],[6.64,3.313],[6.64,3.33],[6.64,3.343],[6.64,3.345],[6.64,3.356],[6.64,3.367],[6.64,3.483],[6.64,3.484],[6.64,3.712],[6.641,3.292],[6.641,3.307],[6.641,3.316],[6.641,3.33],[6.641,3.332],[6.641,3.333],[6.641,3.343],[6.641,3.345],[6.642,3.269],[6.642,3.288],[6.642,3.294],[6.642,3.331],[6.642,3.333],[6.642,3.354],[6.642,3.355],[6.642,3.363],[6.643,3.255],[6.643,3.269],[6.643,3.326],[6.643,3.328],[6.643,3.348],[6.643,3.367],[6.643,3.477],[6.643,3.479],[6.644,3.262],[6.644,3.325],[6.644,3.326],[6.644,3.328],[6.644,3.363],[6.644,3.484],[6.644,3.556],[6.644,3.562],[6.645,3.264],[6.645,3.326],[6.645,3.328],[6.645,3.354],[6.646,3.271],[6.646,3.476],[6.646,3.478],[6.646,3.484],[6.646,3.518],[6.646,3.731],[6.646,3.914],[6.647,3.26],[6.647,3.306],[6.647,3.359],[6.647,3.36],[6.647,3.482],[6.647,3.516],[6.647,3.517],[6.647,3.717],[6.648,3.352],[6.648,3.364],[6.648,3.483],[6.648,3.58],[6.648,3.827],[6.648,3.989],[6.649,3.27],[6.649,3.295],[6.649,3.309],[6.649,3.357],[6.649,3.475],[6.649,3.514],[6.65,3.245],[6.65,3.262],[6.65,3.282],[6.65,3.309],[6.65,3.347],[6.65,3.358],[6.65,3.359],[6.65,3.486],[6.65,3.488],[6.65,3.517],[6.65,3.543],[6.65,3.98],[6.651,3.327],[6.652,3.297],[6.652,3.299],[6.652,3.31],[6.652,3.335],[6.652,3.34],[6.652,3.343],[6.652,3.348],[6.652,3.356],[6.652,3.483],[6.652,3.516],[6.653,3.298],[6.653,3.313],[6.653,3.314],[6.653,3.319],[6.653,3.493],[6.654,3.26],[6.654,3.273],[6.654,3.288],[6.654,3.348],[6.654,3.35],[6.654,3.475],[6.654,3.493],[6.654,3.596],[6.655,3.272],[6.655,3.293],[6.655,3.487],[6.656,3.306],[6.656,3.323],[6.656,3.324],[6.656,3.333],[6.656,3.354],[6.656,3.473],[6.656,3.487],[6.656,3.575],[6.656,3.593],[6.657,3.295],[6.657,3.326],[6.657,3.332],[6.657,3.335],[6.657,3.477],[6.657,3.539],[6.657,3.576],[6.657,3.795],[6.658,3.281],[6.658,3.31],[6.658,3.318],[6.658,3.331],[6.658,3.337],[6.658,3.504],[6.658,3.576],[6.658,3.672],[6.659,3.3],[6.659,3.351],[6.659,3.504],[6.659,3.516],[6.66,3.276],[6.66,3.296],[6.66,3.306],[6.66,3.333],[6.66,3.508],[6.66,3.519],[6.66,3.67],[6.661,3.293],[6.661,3.323],[6.661,3.471],[6.661,3.515],[6.661,3.519],[6.661,3.521],[6.661,3.525],[6.662,3.25],[6.662,3.51],[6.662,3.588],[6.662,4.0],[6.663,3.521],[6.663,3.612],[6.663,3.667],[6.664,3.25],[6.664,3.282],[6.664,3.308],[6.664,3.333],[6.664,3.515],[6.664,3.592],[6.664,3.65],[6.664,3.67],[6.665,3.28],[6.665,3.286],[6.665,3.287],[6.665,3.29],[6.665,3.294],[6.665,3.323],[6.665,3.458],[6.665,3.48],[6.665,3.521],[6.666,3.306],[6.666,3.307],[6.666,3.313],[6.666,3.32],[6.666,3.324],[6.666,3.526],[6.667,3.251],[6.667,3.289],[6.667,3.321],[6.667,3.324],[6.667,3.327],[6.667,3.462],[6.667,3.492],[6.667,3.586],[6.667,3.666],[6.668,3.321],[6.668,3.338],[6.668,3.473],[6.668,3.53],[6.668,3.593],[6.669,3.276],[6.669,3.288],[6.669,3.331],[6.669,3.491],[6.669,3.586],[6.67,3.254],[6.67,3.276],[6.67,3.288],[6.67,3.324],[6.67,3.328],[6.671,3.283],[6.671,3.31],[6.671,3.329],[6.671,3.481],[6.671,3.513],[6.671,3.535],[6.672,3.321],[6.672,3.328],[6.672,3.337],[6.672,3.451],[6.672,3.535],[6.672,3.669],[6.672,3.996],[6.673,3.254],[6.673,3.287],[6.673,3.29],[6.673,3.298],[6.673,3.474],[6.673,3.739],[6.674,3.272],[6.674,3.274],[6.674,3.292],[6.674,3.299],[6.674,3.315],[6.674,3.478],[6.674,3.516],[6.674,3.569],[6.675,3.274],[6.675,3.299],[6.675,3.304],[6.675,3.54],[6.675,3.594],[6.675,3.712],[6.675,3.982],[6.675,3.993],[6.676,3.267],[6.676,3.294],[6.676,3.595],[6.677,3.292],[6.677,3.462],[6.678,3.26],[6.678,3.287],[6.678,3.303],[6.678,3.985],[6.679,3.261],[6.679,3.483],[6.68,3.488],[6.68,3.516],[6.681,3.672],[6.682,3.267],[6.683,3.284],[6.683,3.487],[6.683,3.511],[6.683,3.599],[6.684,3.263],[6.684,3.274],[6.685,3.271],[6.685,3.278],[6.686,3.271],[6.687,3.267],[6.687,3.277],[6.688,3.278],[6.695,3.263],[6.695,3.267],[6.695,3.274],[6.697,3.27]],"labels":[{"lga":"Ikeja","lat":6.6011,"lon":3.3507},{"lga":"Ifako Ijaye","lat":6.6599,"lon":3.3237},{"lga":"Ajeromi Ifelodun","lat":6.4555,"lon":3.3405},{"lga":"Lagos Island","lat":6.4539,"lon":3.3946},{"lga":"Ibeju Lekki","lat":6.4686,"lon":3.7777},{"lga":"Ojo","lat":6.4687,"lon":3.177},{"lga":"Ikorodu","lat":6.6221,"lon":3.5158},{"lga":"Badagry","lat":6.4388,"lon":2.9521},{"lga":"Eti Osa","lat":6.4441,"lon":3.5057},{"lga":"Oshodi Isolo","lat":6.5383,"lon":3.32},{"lga":"Kosofe","lat":6.5954,"lon":3.3897},{"lga":"Alimosho","lat":6.5834,"lon":3.2667},{"lga":"Lagos Mainland","lat":6.4995,"lon":3.3803},{"lga":"Mushin","lat":6.5289,"lon":3.3497},{"lga":"Epe","lat":6.6222,"lon":3.9741},{"lga":"Agege","lat":6.6206,"lon":3.3135},{"lga":"Amuwo Odofin","lat":6.4592,"lon":3.2841},{"lga":"Apapa","lat":6.4575,"lon":3.3606},{"lga":"Surulere","lat":6.4976,"lon":3.3471},{"lga":"Shomolu","lat":6.5386,"lon":3.3834}],"sample":{"headers":[],"rows":[]}};
+var SITE = 'github', REPO = 'saintamadeus/delivery-gps-check';
+</script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var BASE = DATA.facilities;
+  var state = { overrides: {}, aliases: {}, aliasRows: {}, localAliases: {}, deliveries: null, sourceName: '', filter: null, spotOnly: false, sel: null,
+    mode: 'loading', facFilter: 'todo', editing: null };
+  var store = null; // {saveLoc, delLoc, saveAlias}
+  var downloads = null;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function toast(msg) { document.querySelectorAll('.toast').forEach(function (x) { x.remove(); }); var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600); }
+  function fmtDist(m) { return m == null ? '' : m < 1000 ? Math.round(m) + ' m' : (m / 1000).toFixed(m < 10000 ? 2 : 1) + ' km'; }
+  function fmtDate(d) {
+    if (!d) return ''; try { return d.toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return String(d); }
+  }
+  function parseCoords(s) {
+    var p = String(s || '').replace(/[()°NE]/gi, ' ').split(/[,\s]+/).filter(Boolean).map(Number);
+    if (p.length !== 2 || !isFinite(p[0]) || !isFinite(p[1])) return { err: 'Type two numbers: latitude, longitude (for example 6.5715, 3.3912).' };
+    var lat = p[0], lon = p[1];
+    if (lat > 2 && lat < 5 && lon > 6 && lon < 7.2) { var t = lat; lat = lon; lon = t; } // swapped
+    if (!(lat > 6.2 && lat < 6.9 && lon > 2.6 && lon < 4.5)) return { err: 'That point is outside Lagos State. Check the numbers and their order (latitude first).' };
+    return { lat: +lat.toFixed(6), lon: +lon.toFixed(6) };
+  }
+
+  /* ---------- facilities = base list + saved changes ---------- */
+  function facilities() {
+    var out = BASE.map(function (f) {
+      var o = state.overrides['f' + f.sn];
+      if (!o) return f;
+      return { sn: f.sn, lga: f.lga, name: f.name, lat: o.lat, lon: o.lon, status: 'ok', note: o.note || 'Updated here', edited: true, was: f };
+    });
+    Object.keys(state.overrides).forEach(function (k) {
+      if (k.charAt(0) !== 'n') return; var o = state.overrides[k];
+      out.push({ sn: k, lga: o.lga, name: o.name, lat: o.lat, lon: o.lon, status: 'ok', note: o.note || 'Added here', edited: true, added: true });
+    });
+    return out;
+  }
+  function lgas() { var s = {}; BASE.forEach(function (f) { s[f.lga] = 1; }); return Object.keys(s).sort(); }
+
+  /* ---------- map ---------- */
+  var map, layers = {};
+  function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+  function initMap() {
+    map = L.map('map', { zoomSnap: 0.25, attributionControl: false, preferCanvas: true, minZoom: 9, maxZoom: 18 });
+    map.fitBounds([[6.39, 2.72], [6.70, 4.30]]);
+    layers.base = L.layerGroup().addTo(map);
+    layers.fac = L.layerGroup().addTo(map);
+    layers.del = L.layerGroup().addTo(map);
+    L.control.scale({ imperial: false }).addTo(map);
+    drawBase();
+  }
+  function drawBase() {
+    layers.base.clearLayers();
+    var r = L.canvas({ padding: .3 }), dot = css('--dot');
+    DATA.dots.forEach(function (p) { L.circleMarker(p, { renderer: r, radius: 1.6, stroke: false, fillColor: dot, fillOpacity: 1, interactive: false }).addTo(layers.base); });
+    DATA.labels.forEach(function (l) {
+      L.marker([l.lat, l.lon], { interactive: false, icon: L.divIcon({ className: '', html: '<div class="lga-label">' + esc(l.lga) + '</div>', iconSize: null }) }).addTo(layers.base);
+    });
+  }
+  function drawFacilities() {
+    layers.fac.clearLayers(); if (state.deliveries) return;
+    var ref = css('--ref'), warn = css('--warn');
+    facilities().forEach(function (f) {
+      if (f.lat == null) return;
+      L.circleMarker([f.lat, f.lon], { radius: 4, weight: 1.5, color: f.status === 'verify' ? warn : ref, fill: false })
+        .bindPopup('<b>' + esc(f.name) + '</b><br>' + esc(f.lga) + '<br><span class="mono">' + f.lat.toFixed(5) + ', ' + f.lon.toFixed(5) + '</span>' + (f.status === 'verify' ? '<br>Location still to be checked' : ''))
+        .addTo(layers.fac);
+    });
+  }
+  function drawDeliveries() {
+    layers.del.clearLayers(); layers.fac.clearLayers();
+    var c = { ok: css('--ok'), far: css('--far'), unknown: css('--warn'), noref: css('--warn') }, ref = css('--ref');
+    var seen = {};
+    visible().forEach(function (d) {
+      if (d.fac && d.fac.lat != null && !seen[d.fac.sn]) {
+        seen[d.fac.sn] = 1;
+        L.circleMarker([d.fac.lat, d.fac.lon], { radius: 5, weight: 2, color: ref, fill: false, interactive: false }).addTo(layers.fac);
+      }
+      if (d.lat == null) return;
+      if (d.status === 'far' && d.fac) L.polyline([[d.lat, d.lon], [d.fac.lat, d.fac.lon]], { color: c.far, weight: 1.5, dashArray: '4 5', opacity: .8, interactive: false }).addTo(layers.del);
+      d._m = L.circleMarker([d.lat, d.lon], { radius: 6, weight: 1.5, color: css('--surface'), fillColor: c[d.status] || c.unknown, fillOpacity: .95 })
+        .bindPopup(popup(d)).on('click', function () { select(d, false); }).addTo(layers.del);
+    });
+  }
+  function popup(d) {
+    return '<b>' + esc(d.fac ? d.fac.name : d.name) + '</b><br>Typed on the phone as "' + esc(d.name) + '"<br>' +
+      (d.dist != null ? '<b>' + fmtDist(d.dist) + '</b> from the facility<br>' : '') +
+      '<span class="mono">' + d.lat.toFixed(5) + ', ' + d.lon.toFixed(5) + '</span>' + (d.acc != null ? ' (±' + Math.round(d.acc) + ' m)' : '') +
+      '<br>' + esc(fmtDate(d.date));
+  }
+
+  /* ---------- deliveries ---------- */
+  var STATUS = { ok: 'At the facility', far: 'Too far away', nogps: 'No GPS recorded', unknown: 'Name not recognised', noref: 'Facility has no location yet' };
+  var COLOR = { ok: 'var(--ok)', far: 'var(--far)', nogps: 'var(--none)', unknown: 'var(--warn)', noref: 'var(--warn)' };
+  var ORDER = { far: 0, unknown: 1, noref: 2, nogps: 3, ok: 4 };
+  function recheck() {
+    if (!state.deliveries) return;
+    var lim = Math.max(50, +$('limit').value || 500);
+    Core.check(state.deliveries, facilities(), { limit: lim, aliases: state.aliases });
+    render();
+  }
+  function visible() {
+    return (state.deliveries || []).filter(function (d) {
+      if (state.spotOnly) return d.flags.indexOf('samespot') >= 0;
+      return !state.filter || d.status === state.filter;
+    });
+  }
+  function render() {
+    var ds = state.deliveries; if (!ds) return;
+    var n = { ok: 0, far: 0, nogps: 0, unknown: 0, noref: 0 }, spot = 0;
+    ds.forEach(function (d) { n[d.status]++; if (d.flags.indexOf('samespot') >= 0) spot++; });
+    Object.keys(n).forEach(function (k) { $('n-' + k).textContent = n[k]; });
+    $('tiles').hidden = false;
+    document.querySelectorAll('.tile').forEach(function (t) { t.setAttribute('aria-pressed', String(!state.spotOnly && state.filter === t.dataset.f)); });
+    var a = $('spot-alert');
+    if (spot) {
+      a.hidden = false;
+      a.innerHTML = '<div><b>' + spot + ' deliveries share a GPS spot with deliveries to other facilities.</b> When three or more different facilities are recorded within 60 m of each other, the form was probably filled in one place (an office, a car park) rather than at each facility. <button class="link" id="spot-btn">' + (state.spotOnly ? 'Show all deliveries' : 'Show these') + '</button></div>';
+      $('spot-btn').onclick = function () { state.spotOnly = !state.spotOnly; state.filter = null; render(); };
+    } else a.hidden = true;
+    $('clear-filter').hidden = !(state.filter || state.spotOnly);
+    var vis = visible().slice().sort(function (x, y) { return ORDER[x.status] - ORDER[y.status] || (y.dist || 0) - (x.dist || 0); });
+    $('list-title').textContent = (state.spotOnly ? 'Shared GPS spot' : state.filter ? STATUS[state.filter] : 'All deliveries') + ' · ' + vis.length;
+    var html = vis.map(function (d, i) {
+      var chips = [];
+      if (d.flags.indexOf('samespot') >= 0) chips.push('<span class="chip far">Same spot as ' + (d.spotCount - 1) + ' other facilities</span>');
+      if (d.flags.indexOf('weak') >= 0) chips.push('<span class="chip warn">Weak GPS signal ±' + Math.round(d.acc) + ' m</span>');
+      if (d.flags.indexOf('refcheck') >= 0) chips.push('<span class="chip warn">Facility location still to be checked</span>');
+      if (d.flags.indexOf('otherlga') >= 0) chips.push('<span class="chip">Matched in ' + esc(d.fac.lga) + ', not ' + esc(d.lga.replace(/_/g, ' ')) + '</span>');
+      if (d.how === 'saved') chips.push('<span class="chip">Name linked by hand</span>');
+      var right = d.status === 'ok' || d.status === 'far' ? fmtDist(d.dist) : STATUS[d.status];
+      var items = d.items.map(function (it) { return esc(it.label) + ' <span class="mono">' + it.qty.toLocaleString() + '</span>'; }).join(' · ');
+      var fix = '';
+      if (d.status === 'unknown' && store) {
+        var opts = facilities().filter(function (f) { return Core.lgaKey(f.lga) === Core.lgaKey(d.lga); });
+        if (!opts.length) opts = facilities();
+        fix = '<div class="fix">' +
+          (d.guess ? '<button class="primary" data-yes="' + i + '">Yes, it\'s ' + esc(d.guess.name) + '</button><span class="note">or</span>' : '') +
+          '<select data-pick="' + i + '" aria-label="Pick the facility"><option value="">Pick the facility…</option>' +
+          opts.map(function (f) { return '<option value="' + esc(f.sn) + '">' + esc(f.name) + '</option>'; }).join('') + '</select></div>';
+      }
+      return '<div class="row' + (state.sel === d ? ' sel' : '') + '" data-i="' + i + '" style="--c:' + COLOR[d.status] + '" tabindex="0">' +
+        '<div class="stripe"></div><div style="min-width:0">' +
+        '<div class="l1"><span class="fac">' + esc(d.fac ? d.fac.name : d.name) + '</span><span class="dist">' + esc(right) + '</span></div>' +
+        '<div class="meta">' + (d.fac && Core.core(d.fac.name).text !== Core.core(d.name).text ? 'Typed as "' + esc(d.name) + '" · ' : '') + esc(d.lga.replace(/_/g, ' ')) + (d.date ? ' · ' + esc(fmtDate(d.date)) : '') + '</div>' +
+        (items ? '<div class="items">' + items + '</div>' : '') +
+        (d.status === 'unknown' && d.guess && !store ? '<div class="meta">Closest name: ' + esc(d.guess.name) + '</div>' : '') +
+        (chips.length ? '<div class="chips">' + chips.join('') + '</div>' : '') + fix + '</div></div>';
+    }).join('');
+    var rows = $('rows');
+    rows.innerHTML = html || '<div class="empty">Nothing in this group.</div>';
+    rows._vis = vis;
+    drawDeliveries();
+  }
+  function select(d, pan) {
+    state.sel = d;
+    document.querySelectorAll('.row.sel').forEach(function (r) { r.classList.remove('sel'); });
+    var vis = $('rows')._vis || [], i = vis.indexOf(d);
+    var el = document.querySelector('.row[data-i="' + i + '"]'); if (el) { el.classList.add('sel'); if (!pan) el.scrollIntoView({ block: 'nearest' }); }
+    if (pan && d.lat != null) {
+      var pts = [[d.lat, d.lon]]; if (d.fac && d.fac.lat != null) pts.push([d.fac.lat, d.fac.lon]);
+      if (d._m) map.once('moveend', function () { d._m.openPopup(); });
+      map.fitBounds(pts, { maxZoom: 16, padding: [60, 60] });
+    } else if (pan && d.fac && d.fac.lat != null) map.setView([d.fac.lat, d.fac.lon], 15);
+  }
+  $('rows').addEventListener('click', function (e) {
+    var yes = e.target.closest('[data-yes]');
+    if (yes) { var d0 = $('rows')._vis[+yes.dataset.yes]; linkName(d0, d0.guess.sn); return; }
+    if (e.target.closest('.fix')) return;
+    var r = e.target.closest('.row'); if (!r) return;
+    select($('rows')._vis[+r.dataset.i], true);
+  });
+  $('rows').addEventListener('change', function (e) {
+    var p = e.target.closest('[data-pick]'); if (!p || !p.value) return;
+    linkName($('rows')._vis[+p.dataset.pick], p.value);
+  });
+  $('rows').addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.classList.contains('row')) select($('rows')._vis[+e.target.dataset.i], true); });
+  function linkName(d, sn) {
+    if (!store) return;
+    var key = Core.aliasKey(d.lga, d.name);
+    store.saveAlias(key, { sn: String(sn), lga: d.lga, typed: d.name }).then(function () {
+      state.aliases[key] = String(sn); state.aliasRows[key] = { sn: String(sn), lga: d.lga, typed: d.name }; recheck(); updatePending(); toast('Linked. "' + d.name + '" will be recognised from now on.');
+    }, function (e) { toast(e.message || 'Could not save.'); });
+  }
+  document.querySelectorAll('.tile').forEach(function (t) {
+    t.onclick = function () { state.spotOnly = false; state.filter = state.filter === t.dataset.f ? null : t.dataset.f; render(); };
+  });
+  $('clear-filter').onclick = function () { state.filter = null; state.spotOnly = false; render(); };
+  $('limit').addEventListener('change', recheck);
+
+  function loadRows(rows, name) {
+    $('file-err').hidden = true;
+    try {
+      var ds = Core.parseTracker(rows);
+      if (!ds.length) throw new Error('The file has headings but no deliveries under them.');
+      state.deliveries = ds; state.sourceName = name; state.filter = null; state.spotOnly = false; state.sel = null;
+      var dates = ds.map(function (d) { return d.date; }).filter(Boolean).sort(function (a, b) { return a - b; });
+      $('loaded').innerHTML = '<b>' + esc(name) + '</b> · ' + ds.length + ' deliveries' + (dates.length ? ', ' + esc(dates[0].toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })) + ' – ' + esc(dates[dates.length - 1].toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })) : '');
+      $('dl-results').disabled = false;
+      recheck();
+      map.fitBounds([[6.39, 2.72], [6.70, 4.30]]);
+    } catch (e) { $('file-err').hidden = false; $('file-err').textContent = e.message; }
+  }
+  $('file').addEventListener('change', function (e) {
+    var f = e.target.files[0]; if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      try {
+        var wb = XLSX.read(new Uint8Array(rd.result), { type: 'array', cellDates: true });
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        loadRows(XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' }), f.name);
+      } catch (err) { $('file-err').hidden = false; $('file-err').textContent = 'Could not read that file. Upload the .xlsx or .csv export from the delivery form.'; }
+      e.target.value = '';
+    };
+    rd.readAsArrayBuffer(f);
+  });
+  $('load-sample').onclick = function () { loadRows([DATA.sample.headers].concat(DATA.sample.rows), 'Sept 2026 tracker (example)'); };
+
+  /* ---------- downloads ---------- */
+  function saveXlsx(filename, aoa, widths) {
+    var ws = XLSX.utils.aoa_to_sheet(aoa); if (widths) ws['!cols'] = widths.map(function (w) { return { wch: w }; });
+    var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    var buf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    var blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    if (downloads) {
+      downloads.save({ filename: filename, data: blob }).then(function () { toast('Saved ' + filename); }, function (e) { if (e && e.code !== 'declined') toast('Could not save the file here.'); });
+    } else if (!window.claude) {
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    } else toast('Downloads are not available in this view.');
+  }
+  $('dl-results').onclick = function () {
+    var lim = +$('limit').value || 500;
+    var aoa = [['Result', 'Distance (m)', 'Typed facility name', 'Matched facility', 'LGA', 'Date and time', 'Delivery GPS', 'GPS accuracy (m)', 'Facility GPS', 'Warnings', 'Commodities delivered']];
+    state.deliveries.slice().sort(function (x, y) { return ORDER[x.status] - ORDER[y.status] || (y.dist || 0) - (x.dist || 0); }).forEach(function (d) {
+      var w = [];
+      if (d.flags.indexOf('samespot') >= 0) w.push('Same GPS spot as ' + (d.spotCount - 1) + ' other facilities');
+      if (d.flags.indexOf('weak') >= 0) w.push('Weak GPS signal');
+      if (d.flags.indexOf('refcheck') >= 0) w.push('Facility location still to be checked');
+      aoa.push([STATUS[d.status], d.dist != null ? Math.round(d.dist) : '', d.name, d.fac ? d.fac.name : '', d.lga.replace(/_/g, ' '),
+        d.date ? d.date.toLocaleString('en-GB') : '', d.lat != null ? d.lat + ', ' + d.lon : '', d.acc != null ? Math.round(d.acc) : '',
+        d.fac && d.fac.lat != null ? d.fac.lat + ', ' + d.fac.lon : '', w.join('; '),
+        d.items.map(function (it) { return it.label + ' ' + it.qty + (it.batch ? ' (batch ' + it.batch + ')' : ''); }).join('; ')]);
+    });
+    aoa.push([]); aoa.push(['Flag limit: ' + lim + ' m. Checked with Delivery GPS Check against the facility GPS list.']);
+    saveXlsx('GPS check - ' + state.sourceName.replace(/\.[a-z]+$/i, '') + '.xlsx', aoa, [24, 12, 28, 40, 16, 20, 24, 10, 24, 40, 60]);
+  };
+  $('dl-fac').onclick = function () {
+    var aoa = [['S/N', 'LGA', 'Facility Name', 'Latitude', 'Longitude', 'Status', 'Where it came from']];
+    facilities().forEach(function (f) { aoa.push([typeof f.sn === 'number' ? f.sn : 'new', f.lga, f.name, f.lat == null ? '' : f.lat, f.lon == null ? '' : f.lon, f.status === 'ok' ? 'Confirmed' : f.status === 'verify' ? 'To check' : 'No location yet', f.note]); });
+    saveXlsx('Facility GPS list.xlsx', aoa, [6, 16, 44, 11, 11, 14, 60]);
+  };
+
+  /* ---------- facility locations tab ---------- */
+  function renderFac() {
+    var fs = facilities(), q = $('fac-q').value.trim().toLowerCase();
+    var cnt = { ok: 0, verify: 0, missing: 0 }; fs.forEach(function (f) { cnt[f.status]++; });
+    var todo = cnt.verify + cnt.missing;
+    $('tab-fac-n').textContent = todo ? String(todo) : '';
+    $('tab-fac-n').title = todo + ' facilities need a location or a check';
+    if ($('fac-count')) $('fac-count').textContent = fs.length;
+    $('fac-summary').innerHTML = '<b>' + fs.length + ' facilities.</b> ' + cnt.ok + ' confirmed, ' + cnt.verify + ' to check, ' + cnt.missing + ' with no location yet.';
+    var list = fs.filter(function (f) {
+      if (state.facFilter === 'todo' && f.status === 'ok') return false;
+      if (state.facFilter === 'edited' && !f.edited) return false;
+      return !q || (f.name + ' ' + f.lga).toLowerCase().indexOf(q) >= 0;
+    });
+    var canEdit = state.mode === 'shared' || state.mode === 'local';
+    $('fac-rows').innerHTML = list.map(function (f) {
+      var key = typeof f.sn === 'number' ? 'f' + f.sn : f.sn;
+      var st = f.edited ? '<span class="st edited">' + (f.added ? 'Added here' : 'Updated here') + '</span>' : '<span class="st ' + f.status + '">' + (f.status === 'ok' ? 'Confirmed' : f.status === 'verify' ? 'To check' : 'No location') + '</span>';
+      var row = '<tr><td class="num">' + (typeof f.sn === 'number' ? f.sn : '+') + '</td><td>' + esc(f.lga) + '</td><td>' + esc(f.name) + '</td><td class="num">' +
+        (f.lat == null ? '—' : f.lat.toFixed(5) + ', ' + f.lon.toFixed(5)) + '</td><td>' + st + '</td><td class="note">' + esc(f.note) + '</td><td>' +
+        (canEdit ? '<button data-edit="' + esc(key) + '">' + (f.lat == null ? 'Add location' : 'Edit') + '</button>' : '') + '</td></tr>';
+      if (state.editing === key) {
+        row += '<tr><td colspan="7"><form class="edit" data-form="' + esc(key) + '">' +
+          '<label>Coordinates (latitude, longitude)<input type="text" id="ed-coords" value="' + (f.lat == null ? '' : f.lat + ', ' + f.lon) + '" placeholder="6.5715, 3.3912"></label>' +
+          '<label>Where it came from<input type="text" id="ed-note" value="' + esc(f.edited ? f.note : '') + '" placeholder="e.g. Confirmed by LGA PHC coordinator, field visit 12 Oct"></label>' +
+          '<div class="acts"><button class="primary" type="submit">Save</button><button type="button" data-cancel="1">Cancel</button>' +
+          (f.edited ? '<button type="button" data-undo="' + esc(key) + '">' + (f.added ? 'Remove' : 'Undo change') + '</button>' : '') + '</div>' +
+          '<div class="err" id="ed-err" hidden></div></form></td></tr>';
+      }
+      return row;
+    }).join('') || '<tr><td colspan="7"><div class="empty">' + (state.facFilter === 'todo' ? 'Every facility has a confirmed location.' : 'No facilities match.') + '</div></td></tr>';
+    $('add-form').hidden = !canEdit;
+    if (state.editing) { var c = $('ed-coords'); if (c) c.focus(); }
+  }
+  $('fac-rows').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.edit) { state.editing = state.editing === b.dataset.edit ? null : b.dataset.edit; renderFac(); }
+    else if (b.dataset.cancel) { state.editing = null; renderFac(); }
+    else if (b.dataset.undo) {
+      store.delLoc(b.dataset.undo).then(function () { delete state.overrides[b.dataset.undo]; state.editing = null; afterFacChange('Change undone.'); }, function (er) { toast(er.message || 'Could not save.'); });
+    }
+  });
+  $('fac-rows').addEventListener('submit', function (e) {
+    e.preventDefault(); var form = e.target, key = form.dataset.form;
+    var c = parseCoords($('ed-coords').value);
+    if (c.err) { $('ed-err').hidden = false; $('ed-err').textContent = c.err; return; }
+    var base = BASE.filter(function (f) { return 'f' + f.sn === key; })[0], prev = state.overrides[key] || {};
+    var doc = { lat: c.lat, lon: c.lon, note: $('ed-note').value.trim() || 'Updated here', updatedAt: new Date().toISOString() };
+    if (base) { doc.sn = base.sn; doc.lga = base.lga; doc.name = base.name; } else { doc.lga = prev.lga; doc.name = prev.name; }
+    store.saveLoc(key, doc).then(function () { state.overrides[key] = doc; state.editing = null; afterFacChange('Location saved.'); }, function (er) { $('ed-err').hidden = false; $('ed-err').textContent = er.message || 'Could not save.'; });
+  });
+  $('add-form').addEventListener('submit', function (e) {
+    e.preventDefault(); var err = $('add-err'); err.hidden = true;
+    var name = $('add-name').value.trim(), c = parseCoords($('add-coords').value);
+    if (!name) { err.hidden = false; err.textContent = 'Type the facility name.'; return; }
+    if (c.err) { err.hidden = false; err.textContent = c.err; return; }
+    var key = 'n' + Date.now().toString(36);
+    var doc = { lga: $('add-lga').value, name: name, lat: c.lat, lon: c.lon, note: $('add-note').value.trim() || 'Added here', updatedAt: new Date().toISOString() };
+    store.saveLoc(key, doc).then(function () { state.overrides[key] = doc; e.target.reset(); afterFacChange('Facility added.'); }, function (er) { err.hidden = false; err.textContent = er.message || 'Could not save.'; });
+  });
+  function afterFacChange(msg) { updatePending(); renderFac(); if (state.deliveries) recheck(); else drawFacilities(); if (msg) toast(msg); }
+  $('fac-q').addEventListener('input', renderFac);
+  document.querySelectorAll('.seg button').forEach(function (b) {
+    b.onclick = function () { state.facFilter = b.dataset.s; document.querySelectorAll('.seg button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); renderFac(); };
+  });
+  $('add-lga').innerHTML = lgas().map(function (l) { return '<option>' + esc(l) + '</option>'; }).join('');
+
+  /* ---------- tabs ---------- */
+  function showTab(fac) {
+    $('tab-check').setAttribute('aria-selected', String(!fac)); $('tab-fac').setAttribute('aria-selected', String(fac));
+    $('view-check').hidden = fac; $('view-fac').hidden = !fac;
+    if (!fac) setTimeout(function () { map.invalidateSize(); }, 0); else renderFac();
+  }
+  $('tab-check').onclick = function () { showTab(false); };
+  $('tab-fac').onclick = function () { showTab(true); };
+
+  /* ---------- where changes are kept ---------- */
+  function setMode(m) {
+    state.mode = m; var el = $('mode');
+    el.className = 'mode' + (m === 'readonly' ? ' ro' : m === 'local' ? ' local' : '');
+    el.textContent = m === 'shared' ? 'Changes are shared with everyone using this link' : m === 'local' ? (SITE === 'github' ? 'Changes stay in this browser until you publish them to GitHub' : 'Offline copy: changes stay on this computer') : m === 'readonly' ? 'View only: ask the owner for edit access to change locations' : 'Loading…';
+    renderFac(); if (state.deliveries) render();
+  }
+  function localStore() {
+    var K = 'gpscheck.v1';
+    function load() { try { return JSON.parse(localStorage.getItem(K) || '{}'); } catch (e) { return {}; } }
+    function save(o) { try { localStorage.setItem(K, JSON.stringify(o)); return true; } catch (e) { return false; } }
+    var s = load(); state.overrides = s.locations || {}; state.localAliases = s.aliases || {};
+    Object.keys(s.aliases || {}).forEach(function (k) { state.aliases[k] = s.aliases[k].sn; state.aliasRows[k] = s.aliases[k]; });
+    function put(kind, key, val) {
+      var o = load(); o[kind] = o[kind] || {}; if (val === null) delete o[kind][key]; else o[kind][key] = val;
+      state.localAliases = o.aliases || {};
+      return save(o) ? Promise.resolve() : Promise.reject(new Error('This browser is not letting the page save. Download the facility list to keep your changes.'));
+    }
+    return { saveLoc: function (k, d) { return put('locations', k, d); }, delLoc: function (k) { return put('locations', k, null); }, saveAlias: function (k, d) { return put('aliases', k, d); },
+      clear: function () { try { localStorage.removeItem(K); } catch (e) {} } };
+  }
+  function sharedStore(db) {
+    function wrap(p) { return p.catch(function (e) { throw new Error(e && e.code === 'invalid_argument' ? 'You need edit access to change this.' : 'Could not save just now. Try again.'); }); }
+    return {
+      saveLoc: function (k, d) { return wrap(db.collection('locations').doc(k).set(d)); },
+      delLoc: function (k) { return wrap(db.collection('locations').doc(k).delete()); },
+      saveAlias: function (k, d) { return wrap(db.collection('aliases').doc(k).set(d)); }
+    };
+  }
+  /* ---------- GitHub Pages: the facility list and linked names are files in the repo ---------- */
+  function csvRows(text) { var wb = XLSX.read(text, { type: 'string', raw: true }); return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: false, defval: '' }); }
+  function fetchText(name) { return fetch(name, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(name); return r.text(); }); }
+  function ghConnect() {
+    $('load-sample').hidden = true;
+    var edit = REPO ? 'https://github.com/' + REPO + '/edit/main/facilities.csv' : '';
+    $('gh-note').hidden = false;
+    $('gh-note').innerHTML = 'The shared facility list is the file <span class="mono">facilities.csv</span> in the GitHub repo' + (REPO ? ' <a href="https://github.com/' + esc(REPO) + '" target="_blank" rel="noopener">' + esc(REPO) + '</a>' : '') + '. Change it there' + (edit ? ' (<a href="' + esc(edit) + '" target="_blank" rel="noopener">edit facilities.csv</a>)' : '') + ', or make changes here and use <b>Download for GitHub</b>. Everyone sees an update a few minutes after it is committed.';
+    Promise.all([fetchText('facilities.csv'), fetchText('aliases.csv').catch(function () { return ''; })]).then(function (t) {
+      var rows = csvRows(t[0]), h = rows[0].map(function (x) { return String(x).toLowerCase(); });
+      function c(re) { for (var i = 0; i < h.length; i++) if (re.test(h[i])) return i; return -1; }
+      var cs = c(/^s\/?n|^sn$/), cl = c(/^lga/), cn = c(/facility|name/), ca = c(/^lat/), co = c(/^lon|^lng/), ct = c(/status/), cw = c(/came from|source|note/);
+      var list = [];
+      rows.slice(1).forEach(function (r) {
+        if (!r[cn]) return;
+        var lat = r[ca] === '' ? null : +r[ca], lon = r[co] === '' ? null : +r[co];
+        if (!isFinite(lat) || !isFinite(lon)) lat = lon = null;
+        var st = String(r[ct] || '').toLowerCase();
+        list.push({ sn: +r[cs] || r[cs], lga: r[cl], name: r[cn], lat: lat, lon: lon,
+          status: lat == null ? 'missing' : /check|verify/.test(st) ? 'verify' : 'ok', note: cw >= 0 ? r[cw] : '' });
+      });
+      if (list.length) BASE = list;
+      if (t[1]) {
+        var ar = csvRows(t[1]), ah = ar[0].map(function (x) { return String(x).toLowerCase(); });
+        var il = ah.indexOf('lga'), it = ah.findIndex(function (x) { return /typed/.test(x); }), is = ah.findIndex(function (x) { return /s\/?n/.test(x); });
+        ar.slice(1).forEach(function (r) { if (!r[it] || r[is] === '') return; var k = Core.aliasKey(r[il], r[it]); state.aliases[k] = String(r[is]); state.aliasRows[k] = { lga: r[il], typed: r[it], sn: String(r[is]) }; });
+      }
+    }).catch(function () {
+      $('gh-note').innerHTML += ' <b>Could not read facilities.csv, so the copy built into the page is being used.</b>';
+    }).then(function () {
+      store = localStore(); setMode('local'); afterFacChange(); if (state.deliveries) recheck(); else drawFacilities();
+    });
+  }
+  function updatePending() {
+    var box = $('gh-pending'); if (SITE !== 'github' || !box) return;
+    var nl = Object.keys(state.overrides).length, na = Object.keys(state.localAliases || {}).length;
+    if (!nl && !na) { box.hidden = true; return; }
+    box.hidden = false;
+    box.innerHTML = '<div style="flex:1 1 280px"><b>' + (nl ? nl + ' location change' + (nl > 1 ? 's' : '') : '') + (nl && na ? ' and ' : '') + (na ? na + ' linked name' + (na > 1 ? 's' : '') : '') +
+      ' saved in this browser only.</b> Download the two files and upload them to the GitHub repo so everyone gets them.</div>' +
+      '<button class="primary" id="gh-dl">Download for GitHub</button><button id="gh-clear">I\'ve uploaded them, clear this browser</button>';
+    $('gh-dl').onclick = ghDownload;
+    $('gh-clear').onclick = function () {
+      if (this.dataset.sure !== '1') { this.dataset.sure = '1'; this.textContent = 'Sure? Click again to clear'; return; }
+      store.clear(); location.reload();
+    };
+  }
+  function saveText(name, text) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' })); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  function ghDownload() {
+    var max = 0; BASE.forEach(function (f) { if (typeof f.sn === 'number' && f.sn > max) max = f.sn; });
+    var fa = [['S/N', 'LGA', 'Facility Name', 'Latitude', 'Longitude', 'Status', 'Where it came from']];
+    facilities().forEach(function (f) {
+      fa.push([typeof f.sn === 'number' ? f.sn : ++max, f.lga, f.name, f.lat == null ? '' : f.lat, f.lon == null ? '' : f.lon,
+        f.lat == null ? 'No location yet' : f.status === 'verify' ? 'To check' : 'Confirmed', f.note || '']);
+    });
+    var aa = [['LGA', 'Typed name', 'S/N']];
+    Object.keys(state.aliasRows).forEach(function (k) { var r = state.aliasRows[k]; aa.push([r.lga, r.typed, r.sn]); });
+    function csv(a) { return XLSX.utils.sheet_to_csv(XLSX.utils.aoa_to_sheet(a)); }
+    saveText('facilities.csv', csv(fa));
+    setTimeout(function () { saveText('aliases.csv', csv(aa)); }, 400);
+    toast('Downloaded facilities.csv and aliases.csv');
+  }
+
+  function connect() {
+    if (SITE === 'github') { ghConnect(); return; }
+    if (!window.claude || !window.claude.use) { store = localStore(); setMode('local'); afterFacChange(); return; }
+    setMode('loading');
+    window.claude.use('downloads').then(function (d) { downloads = d; });
+    Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function (r) {
+      var db = r[0], user = r[1];
+      if (!db) { setMode('readonly'); return; }
+      db.collection('locations').onSnapshot(function (snap) {
+        var o = {}; snap.docs.forEach(function (d) { var v = d.data(); if (v && isFinite(v.lat) && isFinite(v.lon)) o[d.id] = v; });
+        state.overrides = o; afterFacChange();
+      }, function () {});
+      db.collection('aliases').onSnapshot(function (snap) {
+        var o = {}; snap.docs.forEach(function (d) { var v = d.data(); if (v && v.sn != null) o[d.id] = String(v.sn); });
+        state.aliases = o; if (state.deliveries) recheck();
+      }, function () {});
+      (user ? user.canEdit() : Promise.resolve(false)).then(function (can) {
+        store = can ? sharedStore(db) : null; setMode(can ? 'shared' : 'readonly');
+      });
+    });
+  }
+
+  initMap(); renderFac(); drawFacilities(); connect();
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function retheme() { drawBase(); if (state.deliveries) drawDeliveries(); else drawFacilities(); }
+  if (mq.addEventListener) mq.addEventListener('change', retheme);
+  new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+</script>
+
+</body></html>
