@@ -1,27 +1,17 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>Delivery GPS Check</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a working tool. Toolbar, status tiles that double as filters, then map beside the delivery list; second tab edits facility locations. */
+/* Plain, bright and low-colour on purpose: black and grey, with green and red only for results.
+   Layout: a working tool. Toolbar, status tiles that double as filters, then map beside the delivery list; second tab edits facility locations. */
 :root{
-  --bg:#f3f5f1; --surface:#ffffff; --sunk:#e9ede6; --ink:#16211d; --muted:#5a6863; --line:#d6ddd3;
-  --accent:#0d6b66; --accent-ink:#ffffff; --accent-soft:#dcefec;
-  --ok:#2c7d47; --ok-soft:#e1f1e5; --far:#c13d27; --far-soft:#f9e3de; --warn:#a66d0b; --warn-soft:#f6ecd6;
-  --none:#6f7b76; --none-soft:#e7ebe8; --ref:#25302c; --dot:#b9c4bd; --label:#7d8a84;
-  --f-display:"Archivo","Arial Narrow",Arial,sans-serif; --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --bg:#ffffff; --surface:#ffffff; --sunk:#f4f4f4; --ink:#111111; --muted:#666666; --line:#dddddd;
+  --accent:#111111; --accent-ink:#ffffff; --accent-soft:#f0f0f0;
+  --ok:#1a7f37; --ok-soft:#eaf5ec; --far:#cf222e; --far-soft:#fdeeee; --warn:#666666; --warn-soft:#f0f0f0;
+  --none:#888888; --none-soft:#f0f0f0; --ref:#111111; --dot:#dadada; --label:#999999;
+  --f-display:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; --f-body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; --f-mono:ui-monospace,Consolas,Menlo,monospace;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#111715; --surface:#18201d; --sunk:#1f2925; --ink:#e6ece8; --muted:#9aa8a2; --line:#2d3a35;
-  --accent:#4fb3aa; --accent-ink:#06120f; --accent-soft:#18332f;
-  --ok:#5cc07c; --ok-soft:#173022; --far:#f0806a; --far-soft:#3a1e18; --warn:#e3ad4a; --warn-soft:#352914;
-  --none:#97a49e; --none-soft:#232c29; --ref:#e6ece8; --dot:#34413b; --label:#7f8d87; color-scheme:dark }}
-:root[data-theme="dark"]{
-  --bg:#111715; --surface:#18201d; --sunk:#1f2925; --ink:#e6ece8; --muted:#9aa8a2; --line:#2d3a35;
-  --accent:#4fb3aa; --accent-ink:#06120f; --accent-soft:#18332f;
-  --ok:#5cc07c; --ok-soft:#173022; --far:#f0806a; --far-soft:#3a1e18; --warn:#e3ad4a; --warn-soft:#352914;
-  --none:#97a49e; --none-soft:#232c29; --ref:#e6ece8; --dot:#34413b; --label:#7f8d87; color-scheme:dark }
 
 
 .leaflet-pane,
@@ -687,10 +677,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45}
 .wrap{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:18px 48px}
-h1,h2,h3{font-family:var(--f-display);font-stretch:85%;text-wrap:balance;margin:0}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
 .top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:14px}
 .top .kicker{font-size:12px;color:var(--muted);letter-spacing:.04em}
-.top h1{font-size:30px;font-weight:750;letter-spacing:-.01em;line-height:1.05}
+.top h1{font-size:30px;font-weight:700;letter-spacing:-.01em;line-height:1.05}
 .tabs{display:flex;gap:4px;background:var(--sunk);padding:4px;border-radius:9px}
 .tab{border:0;background:transparent;color:var(--muted);font:600 13px var(--f-body);padding:8px 12px;border-radius:6px;cursor:pointer}
 .tab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
@@ -717,7 +707,7 @@ input[type=text],input[type=number],input[type=search],select,textarea{font:14px
 .tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0}
 @media (max-width:860px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .tile{text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--surface);position:relative}
-.tile .v{font:700 26px/1 var(--f-display);font-stretch:85%;font-variant-numeric:tabular-nums}
+.tile .v{font:700 26px/1 var(--f-display);font-variant-numeric:tabular-nums}
 .tile .l{font-weight:500;color:var(--muted);font-size:12.5px}
 .tile::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--c)}
 .tile[aria-pressed="true"]{border-color:var(--c);box-shadow:0 0 0 1px var(--c) inset}
