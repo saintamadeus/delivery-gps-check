@@ -60,11 +60,13 @@ def main():
          "instance('facility')/root/item[name = ${facility}]/check"],
         ["calculate", "salt", "", "", "", "", "", "", "",
          "instance('facility')/root/item[name = ${facility}]/salt"],
-        ["select_multiple tick", "no_incharge", "Tick ONLY if the in-charge is not there to give the code"],
-        ["text", "code", "Facility code (ask the in-charge AFTER the goods have arrived)", "yes", "numbers", "",
+
+        ["text", "code", "Facility code (ask the in-charge AFTER the goods have arrived). "
+         "If the in-charge is not there, tick the box below instead.", "yes", "numbers", "",
          "digest(concat(${salt}, ${facility}, .), 'SHA-256', 'hex') = ${check}",
          "Wrong code. Ask the facility in-charge again.", "not(" + NO_INCHARGE + ")"],
         ["note", "code_ok", "✅ Code correct. Delivery confirmed by the facility.", "", "", "", "", "", check_now],
+        ["select_multiple tick", "no_incharge", "Tick ONLY if the in-charge is not there to give the code"],
         ["text", "received_by", "Who received the goods instead? (name and role, e.g. 'Mrs Ade, nurse on duty')",
          "yes", "", "", "", "", NO_INCHARGE],
         # location: taken by the phone itself the moment the code (or the receiver's name) is typed.
