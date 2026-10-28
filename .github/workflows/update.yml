@@ -1,0 +1,32 @@
+# Every hour: get the forms from KoBo, work out the statuses, and update the website.
+name: Hourly update
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # at 17 minutes past every hour (GitHub uses UTC; that doesn't matter here)
+  workflow_dispatch:         # adds a "Run workflow" button, so you can also run it any time by hand
+
+permissions:
+  contents: write            # allowed to save the new status files back here
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install openpyxl
+      - name: Get forms from KoBo and work out statuses
+        run: python tools/update.py
+        env:
+          KOBO_FORM: ${{ secrets.KOBO_FORM }}
+          KOBO_TOKEN: ${{ secrets.KOBO_TOKEN }}
+      - name: Save the new status files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
+          git add data/status.csv data/status.xlsx data/updated.json
+          git commit -m "Hourly update" || exit 0
+          git push
