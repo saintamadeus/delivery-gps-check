@@ -1,0 +1,264 @@
+S/N,LGA,Facility Name
+3,Agege,General Hospital Orile Agege
+4,Agege,Health Post Ajegunle
+5,Agege,Papa Ashafa Health Post
+13,Agege,Primary health centre Ibijoke Claudia Sanwoolu
+7,Agege,Primary Health Centre Iloro
+8,Agege,Primary Health Centre Kwakwa Uku
+9,Agege,Primary Health Centre Odunbakun
+10,Agege,Primary Health Centre Powerline
+11,Agege,Primary Health Centre Sango (Lagos)
+1,Agege,Agege - Promise Medical Centre
+14,Ajeromi Ifelodun,Asiwaju Bola Ahmed Tinubu Comprehensive centre
+15,Ajeromi Ifelodun,General Hospital Ajeromi
+16,Ajeromi Ifelodun,Health Centre Akere
+18,Ajeromi Ifelodun,Primary Health Centre Ajegunle
+19,Ajeromi Ifelodun,Primary Health Centre Amukoko
+20,Ajeromi Ifelodun,Primary Health Centre Ibafon
+21,Ajeromi Ifelodun,Primary Health Centre Layeni
+22,Ajeromi Ifelodun,Primary Health Centre Oridilu
+23,Ajeromi Ifelodun,Primary Health Centre Tolu
+25,Alimosho,Ishuti Health Post
+27,Alimosho,Primary Health Centre Abaranje
+28,Alimosho,Primary Health Centre Aboru
+31,Alimosho,Primary Health Centre Agodo
+34,Alimosho,Primary Health Centre Akowonjo
+35,Alimosho,Primary Health Centre Amikanle
+37,Alimosho,Primary Health Centre Ayobo
+38,Alimosho,Primary Health Centre Bada
+41,Alimosho,Primary Health Centre Egan
+42,Alimosho,Primary Health Centre Egbe Idimu (Helen Aderonke)
+43,Alimosho,Primary Health Centre Ijegun
+44,Alimosho,Primary Health Centre Ikola
+45,Alimosho,Primary Health Centre Ikotun
+46,Alimosho,Primary Health Centre Ipaja
+48,Alimosho,Primary Health Centre Isefun
+49,Alimosho,Primary Health Centre Isheri Olofin
+50,Alimosho,Primary Health Centre Isheri-Oshun
+52,Alimosho,Primary Health Centre Meiran
+54,Alimosho,Primary Health Centre Oke-Odo
+56,Alimosho,Primary Health Centre Olota
+57,Alimosho,Primary Health Centre Opeki
+58,Alimosho,Primary Health Centre Orisunbare
+59,Alimosho,Primary Health Centre Rauf Aregbesola
+60,Alimosho,Primary Health Centre Surulere
+61,Amuwo Odofin,Health Post Irede
+62,Amuwo Odofin,Health Post Tomaro
+63,Amuwo Odofin,Maternal And Child Health Centre Amuwo
+64,Amuwo Odofin,Nigerian Navy Reference Hospital Ojo
+65,Amuwo Odofin,Primary Health Centre Agboju
+66,Amuwo Odofin,Primary Health Centre Bola Ahmed Tinubu
+67,Amuwo Odofin,Primary Health Centre Festac
+68,Amuwo Odofin,Primary Health Centre Ibeshe Amuwo Odofin
+69,Amuwo Odofin,Primary Health Centre Igbologun
+70,Amuwo Odofin,Primary Health Centre Ijegun
+71,Amuwo Odofin,Primary Health Centre Kirikiri
+72,Amuwo Odofin,Primary Health Centre Mile 2
+73,Amuwo Odofin,Primary Health Centre Sagbokoji
+74,Amuwo Odofin,Primary Health Centre Satellite
+76,Apapa,Primary Health Centre Ijora
+77,Apapa,Primary Health Centre Marine Beach
+78,Apapa,Primary Health Centre Nanti
+79,Apapa,Primary Health Centre Ojora Olugbode
+80,Apapa,Primary Health Centre Olojowon
+81,Apapa,Primary Health Centre Oluwole
+82,Apapa,Primary Health Centre Sari Iganmu
+83,Apapa,Primary Health Centre Zion
+84,Badagry,General Hospital Badagry
+85,Badagry,Health Post Isamole
+86,Badagry,Primary Health Centre Ajara
+88,Badagry,Primary Health Centre Apa Badagry
+89,Badagry,Primary Health Centre Araromi
+90,Badagry,Primary Health Centre Farasime
+93,Badagry,Primary Health Centre Ibereko Barracks
+94,Badagry,Primary Health Centre Igbogbele
+95,Badagry,Primary Health Centre Ilado
+96,Badagry,Primary Health Centre Ilogbo
+97,Badagry,Primary Health Centre Marina
+98,Badagry,Primary Health Centre Morogbo
+99,Badagry,Primary Health Centre Mowo
+101,Badagry,Primary Health Centre Pota
+102,Badagry,Primary Health Centre Sakpo
+103,Badagry,Primary Health Centre Seme
+105,Epe,General Hospital Agbowa
+106,Epe,General Hospital Epe
+111,Epe,Primary Health Centre Eredo
+118,Epe,Primary Health Centre Odomola
+119,Epe,Primary Health Centre Papa
+120,Epe,Primary Health Centre Poka
+122,Eti Osa,Maternal and Child health Centre Eti-Osa
+125,Eti Osa,Police Hospital Falomo
+126,Eti Osa,Primary Health Centre Ado Langbasa
+127,Eti Osa,Primary Health Centre Ajah
+128,Eti Osa,Primary Health Centre Ajiran
+129,Eti Osa,Primary Health Centre Badore
+142,Eti Osa,Primary health centre Ifesowapo
+131,Eti Osa,Primary Health Centre Igbo-Efon
+133,Eti Osa,Primary Health Centre Ikota
+134,Eti Osa,Primary Health Centre Ikoyi
+135,Eti Osa,Primary Health Centre Ilasan
+136,Eti Osa,Primary Health Centre Obalende
+137,Eti Osa,Primary Health Centre Ogombo
+139,Eti Osa,Primary Health Centre Oniru
+141,Eti Osa,Primary Health Centre Sangotedo
+144,Ibeju Lekki,Primary Health Centre Apakin
+146,Ibeju Lekki,Primary Health Centre Awoyaya 1
+148,Ibeju Lekki,Primary Health Centre Bogije
+150,Ibeju Lekki,Primary Health Centre Folu
+151,Ibeju Lekki,Primary Health Centre Ibeju
+152,Ibeju Lekki,Primary Health Centre Iberekodo
+153,Ibeju Lekki,Primary Health Centre Idasho
+155,Ibeju Lekki,Primary Health Centre Lakowe
+156,Ibeju Lekki,Primary Health Centre Lekki
+159,Ibeju Lekki,Primary Health Centre Okunraye
+160,Ibeju Lekki,Primary Health Centre Orimedu
+161,Ibeju Lekki,Primary Health Centre Otunla
+162,Ibeju Lekki,Primary Health Centre Solu Alade
+163,Ifako Ijaye,General Hospital Ifako Ijaiye
+164,Ifako Ijaye,Primary Health Centre Abule Tuntun
+165,Ifako Ijaye,Primary Health Centre Adesola
+166,Ifako Ijaye,Primary Health Centre Agbado (Primary Health Centre Kola)
+168,Ifako Ijaye,Primary Health Centre Ifako
+169,Ifako Ijaye,Primary Health Centre Iju
+170,Ifako Ijaye,Primary Health Centre Ilo Ajegunle
+171,Ifako Ijaye,Primary Health Centre Isokan
+172,Ifako Ijaye,Primary Health Centre Obawole
+173,Ifako Ijaye,Primary Health Centre Ogundinmu
+177,Ikeja,Health Post Alade Market
+178,Ikeja,Lagos State University Teaching Hospital Ikeja
+179,Ikeja,Primary Health Center Agidingbi
+180,Ikeja,Primary Health Centre Abule Onigbagbo
+183,Ikeja,Primary Health Centre Aguda
+184,Ikeja,Primary Health Centre Akiode
+185,Ikeja,Primary Health Centre Alausa
+186,Ikeja,Primary Health Centre Beko Ransome-Kuti
+187,Ikeja,Primary Health Centre Ikeja
+188,Ikeja,Primary Health Centre Ogba Oluwole
+189,Ikeja,Primary Health Centre Ojodu
+190,Ikeja,Primary Health Centre Oke Ira Mdg
+191,Ikeja,Primary Health Centre Oke-Ira Powerline
+193,Ikeja,Primary Health Centre Onigbongbo
+194,Ikeja,Primary Health Centre Onilekere
+195,Ikeja,Primary Health Centre Onipetesi
+196,Ikeja,Primary Health Centre Opebi
+197,Ikeja,Primary Health Centre Oregun
+198,Ikeja,Primary Health Centre Wasimi
+200,Ikorodu,Eocc
+202,Ikorodu,General Hospital Ikorodu
+203,Ikorodu,General Hospital Imota
+204,Ikorodu,Health Centre Ijede
+205,Ikorodu,Health Post Parafa
+208,Ikorodu,Primary Health Centre Agbede
+209,Ikorodu,Primary Health Centre Agbele
+210,Ikorodu,Primary Health Centre Agura
+212,Ikorodu,Primary Health Centre Bayeku
+213,Ikorodu,Primary Health Centre Erunwen
+214,Ikorodu,Primary Health Centre Ewu Elepe
+215,Ikorodu,Primary Health Centre Ibeshe
+216,Ikorodu,Primary Health Centre Igbalu
+217,Ikorodu,Primary Health Centre Igbogbo (Primary Health Centreagbele)
+218,Ikorodu,Primary Health Centre Igboolomu
+206,Ikorodu,Primary Health Centre (Imota) Orio Kuta
+220,Ikorodu,Primary Health Centre Ipakodo
+221,Ikorodu,Primary Health Centre Isiu
+222,Ikorodu,Primary Health Centre Ita-Elewa
+223,Ikorodu,Primary Health Centre Lasunwo
+224,Ikorodu,Primary Health Centre Losi Oba
+225,Ikorodu,Primary Health Centre Majidun
+227,Ikorodu,Primary Health Centre Odonla
+228,Ikorodu,Primary Health Centre Offin
+229,Ikorodu,Primary Health Centre Oke Eletu
+230,Ikorodu,Primary Health Centre Oke-Lisa
+231,Ikorodu,Primary Health Centre Olorunda
+233,Ikorodu,Primary Health Centre Ori Okuta
+234,Kosofe,General Hospital Gbagada
+235,Kosofe,Primary Health Centre Agboyi
+237,Kosofe,Primary Health Centre Alapere
+238,Kosofe,Primary Health Centre Idera
+239,Kosofe,Primary Health Centre Ikosi
+241,Kosofe,Primary Health Centre Ketu (Mascara)
+242,Kosofe,Primary Health Centre Maidan
+243,Kosofe,Primary Health Centre Mende
+244,Kosofe,Primary Health Centre Ogudu Kosofe
+245,Kosofe,Primary Health Centre Olowora
+246,Kosofe,Primary Health Centre Oworo
+247,Lagos Island,Anikantamo Primary Health Centre
+248,Lagos Island,Carena Health Post
+251,Lagos Island,Health Post Itafaji
+252,Lagos Island,Health Post Tajudeen Olusi
+253,Lagos Island,Lagos Island Maternity Hospital
+254,Lagos Island,Massey Street Children Hospital
+255,Lagos Island,Onala Health Post
+256,Lagos Island,Primary Health Centre Agarawu (Oko Awo)
+257,Lagos Island,Primary Health Centre Araromi
+258,Lagos Island,Primary Health Centre Iga Iduganrun
+259,Lagos Island,Primary Health Centre Oba Adeyinka Oyekan
+260,Lagos Island,Primary Health Centre Olowogbowo
+261,Lagos Island,Primary Health Centre Phase 3
+262,Lagos Island,Primary Health Centre Sura
+263,Lagos Mainland,Federal Medical Centre Ebute-Metta
+265,Lagos Mainland,Health Centre Harvey Road
+268,Lagos Mainland,Primary Health Centre Aiyetoro
+272,Lagos Mainland,Primary Health Centre Iwaya
+274,Lagos Mainland,Primary Health Centre Otto
+276,Lagos Mainland,Primary Health Centre Simpson
+278,Mushin,Idi- Araba Health Post
+279,Mushin,Lagos University Teaching Hospital (Luth) 2
+280,Mushin,Lagos University Teaching Hospital (Luth) Clinic
+281,Mushin,Primary Health Centre Ajeabo
+282,Mushin,Primary Health Centre Ajisegiri
+283,Mushin,Primary Health Centre Alves
+284,Mushin,Primary Health Centre Anikulapo
+285,Mushin,Primary Health Centre Ayantuga
+286,Mushin,Primary Health Centre Coker
+287,Mushin,Primary Health Centre Igbo Owu
+288,Mushin,Primary Health Centre Isolo
+289,Mushin,Primary Health Centre Itire Ijesha
+290,Mushin,Primary Health Centre Kajola
+291,Mushin,Primary Health Centre Palm Avenue
+292,Ojo,Health Centre Shibiri
+295,Ojo,Primary Health Centre Afromedia
+296,Ojo,Primary Health Centre Era Mini
+297,Ojo,Primary Health Centre Iba
+298,Ojo,Primary Health Centre Igbede
+300,Ojo,Primary Health Centre Ijanikin
+301,Ojo,Primary Health Centre Ijedodo
+299,Ojo,Primary Health Centre Ijagemo
+302,Ojo,Primary Health Centre Imude
+303,Ojo,Primary Health Centre Irewe
+305,Ojo,Primary Health Centre Ishashi
+307,Ojo,Primary Health Centre Oba Adeshina
+308,Ojo,Primary Health Centre Ojo
+309,Ojo,Primary Health Centre Oke-Ijeun
+310,Ojo,Primary Health Centre Okokomaiko
+313,Oshodi Isolo,Dauda Ilo
+314,Oshodi Isolo,General Hospital Isolo
+315,Oshodi Isolo,Primary Health Centre Ailegun
+318,Oshodi Isolo,Primary Health Centre Ayo Ni
+320,Oshodi Isolo,Primary Health Centre Ewetuntun
+321,Oshodi Isolo,Primary Health Centre Ilasa
+322,Oshodi Isolo,Primary Health Centre Ishaga
+324,Oshodi Isolo,Primary Health Centre Iyana Ejigbo
+325,Oshodi Isolo,Primary Health Centre Jakande
+326,Oshodi Isolo,Primary Health Centre Lsdpc
+327,Oshodi Isolo,Primary Health Centre Mafoluku
+330,Oshodi Isolo,Primary Health Centre Ona Iwamimo
+331,Oshodi Isolo,Primary Health Centre Oshodi
+333,Shomolu,General Hospital Somolu
+334,Shomolu,Primary Health Centre Akinwumi Ambode
+335,Shomolu,Primary Health Centre Akoka
+336,Shomolu,Primary Health Centre Ashogbon
+338,Shomolu,Primary Health Centre Cms
+340,Shomolu,Primary Health Centre Ibijoke Sanwoolu
+341,Shomolu,Primary Health Centre Mafowoku
+343,Shomolu,Primary Health Centre Oloja (Late Hon Adewale Awokoya PHC))
+344,Shomolu,Primary Health Centre Wright
+346,Surulere,Primary Health Centre Airways
+347,Surulere,Primary Health Centre Akerele
+348,Surulere,Primary Health Centre Anjorin
+350,Surulere,Primary Health Centre Coker Aguda
+351,Surulere,Primary Health Centre Ejire
+352,Surulere,Primary Health Centre Femi Gbajabiamila
+353,Surulere,Primary Health Centre Iponri
+354,Surulere,Primary Health Centre Orile Coker
+355,Surulere,Rgh Mcc Gbaja
